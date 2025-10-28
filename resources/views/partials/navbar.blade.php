@@ -36,14 +36,14 @@
             <!-- Auth Buttons -->
             <div class="hidden md:flex items-center space-x-4">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="px-6 py-2 bg-green-400 text-white rounded-full hover:bg-green-500 transition">
+                    <a href="{{ route('dashboard') }}" class="px-6 py-2 bg-green-400 text-black rounded-full hover:bg-green-500 transition">
                         Go To Dashboard
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 transition">
                         Masuk
                     </a>
-                    <a href="{{ route('register') }}" class="px-6 py-2 bg-green-400 text-white rounded-full hover:bg-green-500 transition">
+                    <a href="{{ route('register') }}" class="px-6 py-2 bg-vetopia-green text-black rounded-full hover:bg-green-500 transition">
                         Daftar
                     </a>
                 @endauth
