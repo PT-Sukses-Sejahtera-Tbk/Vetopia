@@ -21,4 +21,8 @@ Route::get('/layanan', function () {
     return view('layanan');
 })->name('layanan');
 
+Route::get('/booking-konsultasi', function () {
+    return view('bookConsultation/index');
+})->name('booking.konsultasi');
+
 require __DIR__ . '/auth.php';
