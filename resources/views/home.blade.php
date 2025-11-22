@@ -12,7 +12,7 @@
     @vite(['resources/css/app.css','resources/js/app.js'])
     <title>Vetopia | {{ $title ?? 'Home' }}</title>
 </head>
-<body class="bg-white">
+<body class="bg-white overflow-x-hidden">
     @include('partials.navbar')
 
     <!-- Section 1 Hero Section -->

@@ -10,7 +10,7 @@
     <div class="max-w-7xl mx-auto px-4 pb-20">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Booking Konsultasi -->
-            <a href="/booking-konsultasi" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
+            <a href="{{ route('booking.konsultasi') }}" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
                 <div class="flex justify-center mb-6">
                     <div class="w-20 h-20 bg-vetopia-green rounded-2xl flex items-center justify-center">
                         <svg class="w-10 h-10" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
             </a>
 
             <!-- Konsultasi Online -->
-            <a href="/konsultasi-online" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
+            <a href="{{ route('konsultasi.online') }}" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
                 <div class="flex justify-center mb-6">
                     <div class="w-20 h-20 bg-vetopia-green rounded-2xl flex items-center justify-center">
                         <img src="{{ asset('images/KonsulOnlineIcon.png') }}" alt="Konsultasi Online" class="w-10 h-10">
@@ -34,7 +34,7 @@
             </a>
 
             <!-- Rawat Jalan -->
-            <a href="/rawat-jalan" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
+            <a href="{{ route('rawat.jalan') }}" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
                 <div class="flex justify-center mb-6">
                     <div class="w-20 h-20 bg-vetopia-green rounded-2xl flex items-center justify-center">
                         <img src="{{ asset('images/RawatJalanIcon.png') }}" alt="Rawat Jalan" class="w-10 h-10">

@@ -15,14 +15,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/booking-konsultasi', function () {
+        return view('bookConsultation/index');
+    })->name('booking.konsultasi');
+
+    Route::get('/konsultasi-online', function () {
+        return view('konsultasiOnline/index');
+    })->name('konsultasi.online');
+
+    Route::get('/rawat-jalan', function () {
+        return view('rawatJalan/index');
+    })->name('rawat.jalan');
 });
 
 Route::get('/layanan', function () {
     return view('layanan');
 })->name('layanan');
-
-Route::get('/booking-konsultasi', function () {
-    return view('bookConsultation/index');
-})->name('booking.konsultasi');
 
 require __DIR__ . '/auth.php';
