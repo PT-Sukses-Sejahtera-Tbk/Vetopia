@@ -34,3 +34,8 @@ Route::get('/layanan', function () {
 })->name('layanan');
 
 require __DIR__ . '/auth.php';
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/konsultasi-online', [GeminibotController::class, 'index'])->name('chat.index');
+    Route::post('/konsultasi-chat', [GeminibotController::class, 'chat'])->name('chat.process');
+});
