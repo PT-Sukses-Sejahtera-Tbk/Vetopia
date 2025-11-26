@@ -15,11 +15,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed roles first
+        $this->call([
+            RoleSeeder::class,
         ]);
+
+        // Create users with specific roles
+        $user = User::create([
+            'name' => 'Mas Amba',
+            'email' => 'user@vetopia.com',
+            'password' => bcrypt('user123'),
+            'phone_number' => '081234567890',
+        ]);
+        $user->assignRole('user');
+
+        $doctor = User::create([
+            'name' => 'Ambaruwo',
+            'email' => 'doctor@vetopia.com',
+            'password' => bcrypt('doctor123'),
+            'phone_number' => '081234567891',
+        ]);
+        $doctor->assignRole('doctor');
+
+        $admin = User::create([
+            'name' => 'Atmint',
+            'email' => 'admin@vetopia.com',
+            'password' => bcrypt('admin123'),
+            'phone_number' => '081234567892',
+        ]);
+        $admin->assignRole('admin');
+
+        $this->command->info('Users created successfully!');
     }
 }
