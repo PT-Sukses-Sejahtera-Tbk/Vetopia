@@ -8,16 +8,16 @@
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-8">
-                <a href="/" class="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition">
+                <a href="/" class="px-6 py-2 {{ ($title ?? '') == 'Home' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full hover:bg-gray-800 transition">
                     Home
                 </a>
-                <a href="/tentang" class="text-gray-700 hover:text-gray-900 transition">
+                <a href="/tentang" class="px-6 py-2 {{ ($title ?? '') == 'Tentang' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full transition">
                     Tentang
                 </a>
-                <a href="/layanan" class="text-gray-700 hover:text-gray-900 transition">
+                <a href="/layanan" class="px-6 py-2 {{ ($title ?? '') == 'Layanan' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full transition">
                     Layanan
                 </a>
-                <a href="/hubungi-kami" class="text-gray-700 hover:text-gray-900 transition">
+                <a href="/hubungi-kami" class="px-6 py-2 {{ ($title ?? '') == 'Hubungi Kami' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full transition">
                     Hubungi Kami
                 </a>
             </div>
@@ -52,10 +52,10 @@
     <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
         <div class="px-4 pt-2 pb-3 space-y-1">
-            <a href="/" class="block px-3 py-2 rounded-full bg-black text-white">Home</a>
-            <a href="/tentang" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Tentang</a>
-            <a href="#" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Layanan</a>
-            <a href="/hubungi-kami" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Hubungi Kami</a>
+            <a href="/" class="block px-3 py-2 {{ ($title ?? '') == 'Home' ? 'rounded-full bg-black text-white' : 'text-gray-700 hover:bg-gray-100 rounded-md' }}">Home</a>
+            <a href="/tentang" class="block px-3 py-2 {{ ($title ?? '') == 'Tentang' ? 'rounded-full bg-black text-white' : 'text-gray-700 hover:bg-gray-100 rounded-md' }}">Tentang</a>
+            <a href="/layanan" class="block px-3 py-2 {{ ($title ?? '') == 'Layanan' ? 'rounded-full bg-black text-white' : 'text-gray-700 hover:bg-gray-100 rounded-md' }}">Layanan</a>
+            <a href="/hubungi-kami" class="block px-3 py-2 {{ ($title ?? '') == 'Hubungi Kami' ? 'rounded-full bg-black text-white' : 'text-gray-700 hover:bg-gray-100 rounded-md' }}">Hubungi Kami</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Dashboard</a>
             @else

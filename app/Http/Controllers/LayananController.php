@@ -10,7 +10,24 @@ class LayananController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
+    {
+        $title = "Layanan";
+        return view('layanan', compact('title'));
+    }
+
+    public function indexBooking()
+    {
+        //
+    }
+
+    public function indexKonsultasi()
+    {
+        //
+    }
+
+    public function indexRawatJalan()
     {
         //
     }

@@ -1,16 +1,18 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeminibotController;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,13 +32,9 @@ Route::middleware('auth')->group(function () {
     })->name('rawat.jalan');
 });
 
-Route::get('/layanan', function () {
-    return view('layanan');
-})->name('layanan');
-
-require __DIR__ . '/auth.php';
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/konsultasi-online', [GeminibotController::class, 'index'])->name('chat.index');
     Route::post('/konsultasi-chat', [GeminibotController::class, 'chat'])->name('chat.process');
 });
+
+require __DIR__ . '/auth.php';
