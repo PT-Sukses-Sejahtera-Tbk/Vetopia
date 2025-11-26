@@ -23,8 +23,7 @@
             </a>
 
             <!-- Konsultasi Online -->
-            <a href="{{ route('konsultasi.online') }}" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
-                <div class="flex justify-center mb-6">
+<a href="{{ route('chat.index') }}" class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">                <div class="flex justify-center mb-6">
                     <div class="w-20 h-20 bg-vetopia-green rounded-2xl flex items-center justify-center">
                         <img src="{{ asset('images/KonsulOnlineIcon.png') }}" alt="Konsultasi Online" class="w-10 h-10">
                     </div>
