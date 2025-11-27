@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ManageUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeminibotController;
 
@@ -35,6 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/hewan', function () {
         return view('hewan.index'); // or whatever your view path is
     })->name('hewan');
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/manage-user', [ManageUserController::class, 'index'])->name('admin.index');
+    });
 });
 
 Route::middleware(['auth'])->group(function () {

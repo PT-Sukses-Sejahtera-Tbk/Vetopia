@@ -39,10 +39,10 @@
                     @endrole
                     @role('admin')
                     <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
-                        {{'List Hewan'}}
+                        {{'Manajemen Hewan'}}
                     </x-nav-link>
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
-                        {{'List User'}}
+                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                        {{'Manajemen User'}}
                     </x-nav-link>
                     @endrole
                 </div>
