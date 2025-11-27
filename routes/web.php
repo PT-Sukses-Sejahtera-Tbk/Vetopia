@@ -30,6 +30,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/rawat-jalan', function () {
         return view('rawatJalan/index');
     })->name('rawat.jalan');
+
+    // Temporary test route for hewan view
+    Route::get('/hewan', function () {
+        return view('hewan.index'); // or whatever your view path is
+    })->name('hewan');
 });
 
 Route::middleware(['auth'])->group(function () {

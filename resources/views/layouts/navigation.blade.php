@@ -15,6 +15,36 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @role('user')
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{'Hewan Saya'}}
+                    </x-nav-link>
+                    @endrole
+                    @role('doctor')
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{'Pasien Saya'}}
+                    </x-nav-link>
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{'Antrean Konsultasi'}}
+                    </x-nav-link>
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{'Rawat Jalan'}}
+                    </x-nav-link>
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{'Rawat Inap'}}
+                    </x-nav-link>
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{('Validasi Lab') }}
+                    </x-nav-link>
+                    @endrole
+                    @role('admin')
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{'List Hewan'}}
+                    </x-nav-link>
+                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                        {{'List User'}}
+                    </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
