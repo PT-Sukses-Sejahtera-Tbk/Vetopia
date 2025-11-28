@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class ManageUserController extends Controller
 {
@@ -13,7 +16,8 @@ class ManageUserController extends Controller
     public function index()
     {
         $title = "Manajemen User";
-        return view('admin/index', compact('title'));
+        $users = User::with('roles')->get();
+        return view('admin/index', compact('title', 'users'));
     }
 
     /**
@@ -29,7 +33,25 @@ class ManageUserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone_number' => ['required', 'string', 'max:20'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:admin,doctor,user'],
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $user->assignRole($validated['role']);
+
+        return redirect()->route('admin.index')
+            ->with('success', 'User berhasil ditambahkan.');
     }
 
     /**
