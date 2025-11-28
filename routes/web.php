@@ -14,6 +14,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/hubungi-kami', function () {
+    $title = 'Hubungi Kami'; // <-- Tambahkan variabel title
+    return view('HubungiKami.index', compact('title')); // <-- Kirim variabel ke view
+})->name('contact');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
