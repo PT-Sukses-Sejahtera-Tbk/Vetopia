@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HewanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ProfileController;
@@ -38,11 +39,12 @@ Route::middleware('auth')->group(function () {
     })->name('rawat.jalan');
 
     // Temporary test route for hewan view
-    Route::get('/hewan', function () {
-        return view('hewan.index'); // or whatever your view path is
-    })->name('hewan');
+    Route::get('/dummy', function () {
+        return view('dummy.index'); // or whatever your view path is
+    })->name('dummy');
 
     Route::middleware('role:admin')->group(function () {
+        // User Manage Section
         Route::get('/manage-user', [ManageUserController::class, 'index'])->name('admin.userManage.index');
         Route::get('/manage-user/add-user', [ManageUserController::class, 'create'])->name('admin.userManage.create');
         Route::post('/manage-user/store', [ManageUserController::class, 'store'])->name('admin.userManage.store');
@@ -50,6 +52,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/manage-user/{user}', [ManageUserController::class, 'update'])->name('admin.userManage.update');
         Route::delete('/manage-user/{user}', [ManageUserController::class, 'destroy'])->name('admin.userManage.destroy');
     });
+
+    // Hewan Manage Section
+    Route::get('/hewan', [HewanController::class, 'index'])->name('hewan.index');
+    Route::get('/hewan/create', [HewanController::class, 'create'])->name('hewan.create');
+    Route::post('/hewan', [HewanController::class, 'store'])->name('hewan.store');
+    Route::get('/hewan/{hewan}', [HewanController::class, 'show'])->name('hewan.show');
+    Route::get('/hewan/{hewan}/edit', [HewanController::class, 'edit'])->name('hewan.edit');
+    Route::put('/hewan/{hewan}', [HewanController::class, 'update'])->name('hewan.update');
+    Route::delete('/hewan/{hewan}', [HewanController::class, 'destroy'])->name('hewan.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {

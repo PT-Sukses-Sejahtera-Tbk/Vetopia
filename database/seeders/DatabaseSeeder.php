@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Hewan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,13 +22,21 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create users with specific roles
-        $user = User::create([
+        $user1 = User::create([
             'name' => 'Mas Amba',
-            'email' => 'user@vetopia.com',
-            'password' => bcrypt('user123'),
+            'email' => 'amba@vetopia.com',
+            'password' => bcrypt('amba123'),
             'phone_number' => '081234567890',
         ]);
-        $user->assignRole('user');
+        $user1->assignRole('user');
+
+        $user2 = User::create([
+            'name' => 'Imut Rizman',
+            'email' => 'imut@vetopia.com',
+            'password' => bcrypt('imut123'),
+            'phone_number' => '081234567891',
+        ]);
+        $user2->assignRole('user');
 
         $doctor = User::create([
             'name' => 'Ambaruwo',
@@ -45,6 +54,32 @@ class DatabaseSeeder extends Seeder
         ]);
         $admin->assignRole('admin');
 
+        // Create hewans
+        Hewan::create([
+            'user_id' => $user1->id,
+            'nama' => 'Milo',
+            'jenis' => 'Anjing',
+            'ras' => 'Golden Retriever',
+            'umur' => 3,
+        ]);
+
+        Hewan::create([
+            'user_id' => $user2->id,
+            'nama' => 'Luna',
+            'jenis' => 'Kucing',
+            'ras' => 'Persian',
+            'umur' => 2,
+        ]);
+
+        Hewan::create([
+            'user_id' => $user2->id,
+            'nama' => 'Charlie',
+            'jenis' => 'Anjing',
+            'ras' => 'Beagle',
+            'umur' => 4,
+        ]);
+
         $this->command->info('Users created successfully!');
+        $this->command->info('Hewans created successfully!');
     }
 }

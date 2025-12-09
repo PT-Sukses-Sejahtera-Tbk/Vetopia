@@ -12,7 +12,9 @@ class HewanController extends Controller
      */
     public function index()
     {
-        //
+        $title = "Manajemen Hewan";
+        $hewans = Hewan::with('pemilik')->get();
+        return view('admin/hewanManage/index', compact('title', 'hewans'));
     }
 
     /**

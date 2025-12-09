@@ -16,29 +16,29 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     @role('user')
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                    <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
                         {{'Hewan Saya'}}
                     </x-nav-link>
                     @endrole
                     @role('doctor')
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                    <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
                         {{'Pasien Saya'}}
                     </x-nav-link>
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                    <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
                         {{'Antrean Konsultasi'}}
                     </x-nav-link>
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                    <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
                         {{'Rawat Jalan'}}
                     </x-nav-link>
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                    <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
                         {{'Rawat Inap'}}
                     </x-nav-link>
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                    <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
                         {{('Validasi Lab') }}
                     </x-nav-link>
                     @endrole
                     @role('admin')
-                    <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
+                    <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
                         {{'Manajemen Hewan'}}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.userManage.index')" :active="request()->routeIs('admin.userManage.index')">
