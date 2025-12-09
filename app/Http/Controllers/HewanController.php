@@ -22,7 +22,8 @@ class HewanController extends Controller
      */
     public function create()
     {
-        //
+        $title = "Tambah Hewan Baru";
+        return view('admin/hewanManage/create', compact('title'));
     }
 
     /**
@@ -30,7 +31,18 @@ class HewanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+            'nama' => ['required', 'string', 'max:255'],
+            'jenis' => ['required', 'string', 'max:255'],
+            'ras' => ['required', 'string', 'max:255'],
+            'umur' => ['required', 'integer', 'min:0'],
+        ]);
+
+        Hewan::create($validated);
+
+        return redirect()->route('hewan.index')
+            ->with('success', 'Hewan berhasil ditambahkan.');
     }
 
     /**
@@ -38,7 +50,9 @@ class HewanController extends Controller
      */
     public function show(Hewan $hewan)
     {
-        //
+        $title = "Detail Hewan";
+        $hewan->load('pemilik');
+        return view('admin/hewanManage/show', compact('title', 'hewan'));
     }
 
     /**
@@ -46,7 +60,9 @@ class HewanController extends Controller
      */
     public function edit(Hewan $hewan)
     {
-        //
+        $title = "Edit Hewan";
+        $hewan->load('pemilik');
+        return view('admin/hewanManage/edit', compact('title', 'hewan'));
     }
 
     /**
@@ -54,7 +70,18 @@ class HewanController extends Controller
      */
     public function update(Request $request, Hewan $hewan)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+            'nama' => ['required', 'string', 'max:255'],
+            'jenis' => ['required', 'string', 'max:255'],
+            'ras' => ['required', 'string', 'max:255'],
+            'umur' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $hewan->update($validated);
+
+        return redirect()->route('hewan.index')
+            ->with('success', 'Hewan berhasil diperbarui.');
     }
 
     /**
@@ -62,6 +89,9 @@ class HewanController extends Controller
      */
     public function destroy(Hewan $hewan)
     {
-        //
+        $hewan->delete();
+
+        return redirect()->route('hewan.index')
+            ->with('success', 'Hewan berhasil dihapus.');
     }
 }
