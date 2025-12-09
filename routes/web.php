@@ -37,9 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/rawat-jalan', function () {
         return view('rawatJalan/index');
     })->name('rawat.jalan');
+
     Route::get('/penitipan-hewan', function () {
-        // Pastikan Anda membuat file: resources/views/penitipanHewan/index.blade.php
-        return view('penitipanHewan/index'); 
+        return view('penitipanHewan/index');
     })->name('penitipan.hewan');
 
     // Temporary test route for hewan view

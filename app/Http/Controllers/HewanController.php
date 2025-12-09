@@ -51,7 +51,7 @@ class HewanController extends Controller
     public function show(Hewan $hewan)
     {
         $title = "Detail Hewan";
-        $hewan->load('pemilik');
+        $hewan->load(['pemilik', 'rekamMedis.dokter.user', 'rekamMedis.layanan']);
         return view('admin/hewanManage/show', compact('title', 'hewan'));
     }
 
