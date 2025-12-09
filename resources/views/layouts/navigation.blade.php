@@ -41,7 +41,7 @@
                     <x-nav-link :href="route('hewan')" :active="request()->routeIs('hewan')">
                         {{'Manajemen Hewan'}}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                    <x-nav-link :href="route('admin.userManage.index')" :active="request()->routeIs('admin.userManage.index')">
                         {{'Manajemen User'}}
                     </x-nav-link>
                     @endrole

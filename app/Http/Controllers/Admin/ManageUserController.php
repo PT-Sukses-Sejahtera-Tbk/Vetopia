@@ -17,7 +17,7 @@ class ManageUserController extends Controller
     {
         $title = "Manajemen User";
         $users = User::with('roles')->get();
-        return view('admin/index', compact('title', 'users'));
+        return view('admin/userManage/index', compact('title', 'users'));
     }
 
     /**
@@ -25,7 +25,8 @@ class ManageUserController extends Controller
      */
     public function create()
     {
-        //
+        $title = "Tambah User Baru";
+        return view('admin/userManage/create', compact('title'));
     }
 
     /**
@@ -50,7 +51,7 @@ class ManageUserController extends Controller
 
         $user->assignRole($validated['role']);
 
-        return redirect()->route('admin.index')
+        return redirect()->route('admin.userManage.index')
             ->with('success', 'User berhasil ditambahkan.');
     }
 
@@ -67,7 +68,9 @@ class ManageUserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $title = "Edit User";
+        $user = User::with('roles')->findOrFail($id);
+        return view('admin/userManage/edit', compact('title', 'user'));
     }
 
     /**
@@ -75,7 +78,32 @@ class ManageUserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id],
+            'phone_number' => ['required', 'string', 'max:20'],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:admin,doctor,user'],
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'],
+        ]);
+
+        if (!empty($validated['password'])) {
+            $user->update([
+                'password' => Hash::make($validated['password']),
+            ]);
+        }
+
+        $user->syncRoles([$validated['role']]);
+
+        return redirect()->route('admin.userManage.index')
+            ->with('success', 'User berhasil diperbarui.');
     }
 
     /**
@@ -83,6 +111,10 @@ class ManageUserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('admin.userManage.index')
+            ->with('success', 'User berhasil dihapus.');
     }
 }

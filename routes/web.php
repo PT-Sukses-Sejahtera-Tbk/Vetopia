@@ -43,7 +43,12 @@ Route::middleware('auth')->group(function () {
     })->name('hewan');
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('/manage-user', [ManageUserController::class, 'index'])->name('admin.index');
+        Route::get('/manage-user', [ManageUserController::class, 'index'])->name('admin.userManage.index');
+        Route::get('/manage-user/add-user', [ManageUserController::class, 'create'])->name('admin.userManage.create');
+        Route::post('/manage-user/store', [ManageUserController::class, 'store'])->name('admin.userManage.store');
+        Route::get('/manage-user/{user}/edit', [ManageUserController::class, 'edit'])->name('admin.userManage.edit');
+        Route::put('/manage-user/{user}', [ManageUserController::class, 'update'])->name('admin.userManage.update');
+        Route::delete('/manage-user/{user}', [ManageUserController::class, 'destroy'])->name('admin.userManage.destroy');
     });
 });
 
