@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ManageUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeminibotController;
 use App\Http\Controllers\BookingKonsultasiController;
+use App\Http\Controllers\PenitipanHewanController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
@@ -38,9 +39,8 @@ Route::middleware('auth')->group(function () {
         return view('rawatJalan/index');
     })->name('rawat.jalan');
 
-    Route::get('/penitipan-hewan', function () {
-        return view('penitipanHewan/index');
-    })->name('penitipan.hewan');
+    Route::get('/penitipan-hewan', [PenitipanHewanController::class, 'index'])->name('penitipan.hewan');
+    Route::post('/penitipan-hewan', [PenitipanHewanController::class, 'store'])->name('penitipan.hewan.store');
 
     // Temporary test route for hewan view
     Route::get('/dummy', function () {

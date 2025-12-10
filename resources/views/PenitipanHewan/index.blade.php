@@ -6,10 +6,39 @@
         <p class="text-sm font-normal">Lengkapi Informasi hewan kesayangan Anda untuk melakukan Penitipan Hewan</p>
     </div>
 
-    <!-- Form Container -->
+    <div class="max-w-xl mx-auto px-4 mb-6">
+        @if(session('success'))
+            <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
+                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                </svg>
+                <div>
+                    <span class="font-medium">Berhasil!</span> {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if(session('error') || $errors->any())
+            <div class="flex p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
+                <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                </svg>
+                <div>
+                    <span class="font-medium">Gagal!</span>
+                    @if(session('error')) <p>{{ session('error') }}</p> @endif
+                    @if($errors->any())
+                        <ul class="mt-1.5 list-disc list-inside">
+                            @foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </div>
+
     <div class="max-w-xl mx-auto px-4 pb-20">
         <div class="bg-white rounded-3xl border border-gray-200 p-8 shadow-sm">
-            <form action="#" method="POST" id="penitipanForm">
+            <form action="{{ route('penitipan.hewan.store') }}" method="POST" id="penitipanForm">
                 @csrf
                 
                 <div class="mb-8">
@@ -20,47 +49,56 @@
                         <h3 class="text-lg font-semibold">Informasi Hewan</h3>
                     </div>
 
-                    <!-- Nama Hewan -->
                     <div class="mb-4">
                         <label for="nama_hewan" class="block text-sm font-medium text-gray-700 mb-2">Nama Hewan</label>
-                        <input type="text" id="nama_hewan" name="nama_hewan" placeholder="Contoh : Amba" 
+                        <input type="text" id="nama_hewan" name="nama_hewan" value="{{ old('nama_hewan') }}" placeholder="Contoh : Amba" 
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500">
                         <span class="error-message text-sm hidden" id="error-nama_hewan" style="color: #ef4444;">Nama hewan harus diisi</span>
                     </div>
 
-                    <!-- Umur and Spesies -->
+                    <div class="mb-4">
+                        <label for="umur_angka" class="block text-sm font-medium text-gray-700 mb-2">Umur</label>
+                        <div class="flex w-full">
+                            <input type="number" id="umur_angka" name="umur_angka" 
+                                value="{{ old('umur_angka') }}"
+                                placeholder="Contoh: 3" 
+                                class="w-full px-4 py-3 border border-r-0 border-gray-300 rounded-l-lg placeholder-gray-500 focus:ring-0 focus:border-gray-300">
+                            
+                            <select name="satuan_umur" class="w-48 px-4 py-3 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-gray-700 focus:ring-0 focus:border-gray-300 cursor-pointer">
+                                <option value="Tahun" {{ old('satuan_umur') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
+                                <option value="Bulan" {{ old('satuan_umur') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
+                                <option value="Minggu" {{ old('satuan_umur') == 'Minggu' ? 'selected' : '' }}>Minggu</option>
+                            </select>
+                        </div>
+                        
+                        @if($errors->has('umur_angka') || $errors->has('satuan_umur'))
+                            <span class="text-sm text-red-500 mt-1 block">Umur dan satuannya harus diisi</span>
+                        @endif
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label for="umur" class="block text-sm font-medium text-gray-700 mb-2">Umur</label>
-                            <input type="text" id="umur" name="umur" placeholder="Contoh : 3 Tahun" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500">
-                            <span class="error-message text-sm hidden" id="error-umur" style="color: #ef4444;">Umur hewan harus diisi</span>
-                        </div>
-                        <div>
                             <label for="spesies" class="block text-sm font-medium text-gray-700 mb-2">Spesies</label>
-                            <input type="text" id="spesies" name="spesies" placeholder="Contoh : Anjing" 
+                            <input type="text" id="spesies" name="spesies" value="{{ old('spesies') }}" placeholder="Contoh : Anjing" 
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500">
                             <span class="error-message text-sm hidden" id="error-spesies" style="color: #ef4444;">Spesies hewan harus diisi</span>
                         </div>
+
+                        <div>
+                            <label for="ras" class="block text-sm font-medium text-gray-700 mb-2">Ras</label>
+                            <input type="text" id="ras" name="ras" value="{{ old('ras') }}" placeholder="Contoh: Anjing Kampung" class="w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500">
+                            <span class="error-message text-sm hidden" id="error-ras" style="color: #ef4444;">Ras hewan harus diisi</span>
+                        </div>
                     </div>
 
-                    <!-- Ras -->
-                    <div class="mb-4">
-                        <label for="ras" class="block text-sm font-medium text-gray-700 mb-2">Ras</label>
-                        <input type="text" id="ras" name="ras" placeholder="Contoh: Anjing Kampung" class="w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500">
-                        <span class="error-message text-sm hidden" id="error-ras" style="color: #ef4444;">Ras hewan harus diisi</span>
-                    </div>
-
-                    <!-- Alamat Rumah -->
                     <div class="mb-4">
                         <label for="alamat_rumah" class="block text-sm font-medium text-gray-700 mb-2">Alamat Rumah</label>
                         <textarea id="alamat_rumah" name="alamat_rumah" rows="3" placeholder="Contoh: Jl. Cijerah Indah Blok B4 No. 12, Kel. Cijerah, Kec. Bandung Kulon, Kota Bandung, Jawa Barat, 40213" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none placeholder-gray-500"></textarea>
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none placeholder-gray-500">{{ old('alamat_rumah') }}</textarea>
                         <span class="error-message text-sm hidden" id="error-alamat_rumah" style="color: #ef4444;">Alamat rumah harus diisi</span>
                     </div>
                 </div>
 
-                <!-- Tanggal Titip Section -->
                 <div class="mb-8">
                     <div class="flex items-center gap-2 mb-6">
                         <div class="w-8 h-8 bg-vetopia-green rounded-lg flex items-center justify-center">
@@ -72,13 +110,12 @@
                     </div>
 
                     <div class="mb-4">
-                        <input type="date" id="tanggal_titip" name="tanggal_titip" 
+                        <input type="date" id="tanggal_titip" name="tanggal_titip" value="{{ old('tanggal_titip') }}"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg">
                         <span class="error-message text-sm hidden" id="error-tanggal_titip" style="color: #ef4444;">Tanggal titip harus diisi</span>
                     </div>
                 </div>
 
-                <!-- Tanggal Ambil Section -->
                 <div class="mb-8">
                     <div class="flex items-center gap-2 mb-6">
                         <div class="w-8 h-8 bg-vetopia-green rounded-lg flex items-center justify-center">
@@ -90,28 +127,26 @@
                     </div>
 
                     <div class="mb-4">
-                        <input type="date" id="tanggal_ambil" name="tanggal_ambil" 
+                        <input type="date" id="tanggal_ambil" name="tanggal_ambil" value="{{ old('tanggal_ambil') }}"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg">
                         <span class="error-message text-sm hidden" id="error-tanggal_ambil" style="color: #ef4444;">Tanggal ambil harus diisi</span>
                     </div>
                 </div>
 
-                <!-- Jenis Service Section -->
                 <div class="mb-8">
                     <label class="block text-sm font-medium text-gray-700 mb-4">Jenis Service</label>
                     <div class="grid grid-cols-2 gap-4">
-                        <button type="button" class="service-btn px-6 py-3 border-2 border-gray-300 rounded-lg font-medium hover:border-vetopia-green hover:bg-green-50 transition-colors" data-value="pick-up">
+                        <button type="button" class="service-btn px-6 py-3 border-2 border-gray-300 rounded-lg font-medium hover:border-vetopia-green hover:bg-green-50 transition-colors {{ old('jenis_service') == 'pick-up' ? 'border-vetopia-green bg-green-50' : '' }}" data-value="pick-up">
                             Pick - UP
                         </button>
-                        <button type="button" class="service-btn px-6 py-3 border-2 border-gray-300 rounded-lg font-medium hover:border-vetopia-green hover:bg-green-50 transition-colors" data-value="drop-off">
+                        <button type="button" class="service-btn px-6 py-3 border-2 border-gray-300 rounded-lg font-medium hover:border-vetopia-green hover:bg-green-50 transition-colors {{ old('jenis_service') == 'drop-off' ? 'border-vetopia-green bg-green-50' : '' }}" data-value="drop-off">
                             Drop-Off
                         </button>
                     </div>
-                    <input type="hidden" id="jenis_service" name="jenis_service" value="">
+                    <input type="hidden" id="jenis_service" name="jenis_service" value="{{ old('jenis_service') }}">
                     <span class="error-message text-sm hidden" id="error-jenis_service" style="color: #ef4444;">Jenis service harus dipilih</span>
                 </div>
 
-                <!-- Submit Button -->
                 <button type="submit" class="w-full bg-vetopia-green text-black font-semibold py-4 rounded-full hover:bg-green-500 transition-colors">
                     Konfirmasi Booking
                 </button>
@@ -144,7 +179,7 @@
         document.getElementById('penitipanForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Reset all error messages and border colors
+            // Reset all error messages
             document.querySelectorAll('.error-message').forEach(error => {
                 error.classList.add('hidden');
             });
@@ -154,27 +189,30 @@
             });
             
             let isValid = true;
-            const fields = ['nama_hewan', 'umur', 'spesies', 'ras', 'alamat_rumah', 'tanggal_titip', 'tanggal_ambil', 'jenis_service'];
+            
+            // Validasi visual
+            const fields = ['nama_hewan', 'umur_angka', 'spesies', 'ras', 'alamat_rumah', 'tanggal_titip', 'tanggal_ambil', 'jenis_service'];
             
             fields.forEach(field => {
                 const input = document.getElementById(field);
-                const error = document.getElementById('error-' + field);
-                
-                if (!input.value.trim()) {
-                    error.classList.remove('hidden');
-                    if (input.type !== 'hidden') {
-                        input.style.borderColor = '#ef4444';
-                        input.classList.add('border-red-500');
+                if (input) {
+                    const error = document.getElementById('error-' + field);
+                    // Cek jika kosong
+                    if (!input.value.trim()) {
+                         if (error) error.classList.remove('hidden');
+                         
+                         if (input.type !== 'hidden') {
+                            input.style.borderColor = '#ef4444';
+                            input.classList.add('border-red-500');
+                         }
+                         isValid = false;
                     }
-                    isValid = false;
                 }
             });
             
             if (isValid) {
-                // If all fields are valid, submit the form
                 this.submit();
             } else {
-                // Scroll to first error
                 const firstError = document.querySelector('.border-red-500');
                 if (firstError) {
                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -186,7 +224,7 @@
         document.querySelectorAll('input, textarea').forEach(input => {
             input.addEventListener('input', function() {
                 const error = document.getElementById('error-' + this.id);
-                if (this.value.trim()) {
+                if (error && this.value.trim()) {
                     error.classList.add('hidden');
                     this.style.borderColor = '';
                     this.classList.remove('border-red-500');
