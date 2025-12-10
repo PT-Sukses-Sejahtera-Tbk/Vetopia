@@ -37,6 +37,7 @@ public function store(Request $request)
         // 2. Simpan ke Database
         BookingKonsultasi::create([
             'user_id' => Auth::id(),
+            'nama_pemilik' => Auth::user()->name,
             'nama_hewan' => $request->nama_hewan,
             'umur' => $umur_lengkap, // Simpan hasil gabungan
             'spesies' => $request->spesies,

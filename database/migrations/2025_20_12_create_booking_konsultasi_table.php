@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             // Menghubungkan dengan user yang login
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('nama_pemilik');
             
             // Field sesuai request Anda
             $table->string('nama_hewan');

@@ -13,6 +13,7 @@ class BookingKonsultasi extends Model
 
     protected $fillable = [
         'user_id',
+        'nama_pemilik',
         'nama_hewan',
         'umur',
         'spesies',
