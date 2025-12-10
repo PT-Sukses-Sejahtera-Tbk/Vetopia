@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ManageUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeminibotController;
+use App\Http\Controllers\BookingKonsultasiController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
@@ -26,9 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/booking-konsultasi', function () {
-        return view('bookConsultation/index');
-    })->name('booking.konsultasi');
+    Route::get('/booking-konsultasi', [BookingKonsultasiController::class, 'index'])->name('booking.konsultasi');
+    Route::post('/booking-konsultasi', [BookingKonsultasiController::class, 'store'])->name('booking.konsultasi.store');
 
     Route::get('/konsultasi-online', function () {
         return view('konsultasiOnline/index');

@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class BookingKonsultasi extends Model
+{
+    use HasFactory;
+
+    protected $table = 'booking_konsultasi';
+
+    protected $fillable = [
+        'user_id',
+        'nama_hewan',
+        'umur',
+        'spesies',
+        'ras',
+        'keluhan',
+        'tanggal_booking',
+        'status',
+    ];
+
+    // Relasi balik ke User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}
