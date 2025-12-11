@@ -31,6 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking-konsultasi', [BookingKonsultasiController::class, 'index'])->name('booking.konsultasi');
     Route::post('/booking-konsultasi', [BookingKonsultasiController::class, 'store'])->name('booking.konsultasi.store');
 
+    // Doctor booking management routes
+    Route::get('/booking-konsultasi-manage', [BookingKonsultasiController::class, 'manage'])->name('booking.konsultasi.manage');
+    Route::patch('/booking-konsultasi/{id}/status', [BookingKonsultasiController::class, 'updateStatus'])->name('booking.konsultasi.updateStatus');
+    Route::get('/booking-konsultasi/{id}/complete', [BookingKonsultasiController::class, 'showCompleteForm'])->name('booking.konsultasi.complete.form');
+    Route::post('/booking-konsultasi/{id}/complete', [BookingKonsultasiController::class, 'complete'])->name('booking.konsultasi.complete');
+
     Route::get('/konsultasi-online', function () {
         return view('konsultasiOnline/index');
     })->name('konsultasi.online');

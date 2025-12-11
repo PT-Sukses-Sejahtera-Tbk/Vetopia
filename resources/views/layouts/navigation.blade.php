@@ -28,7 +28,7 @@
                         <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
                             {{ 'Pasien Saya' }}
                         </x-nav-link>
-                        <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
+                        <x-nav-link :href="route('booking.konsultasi.manage')" :active="request()->routeIs('booking.konsultasi.manage')">
                             {{ 'Antrean Konsultasi' }}
                         </x-nav-link>
                         <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
@@ -44,6 +44,9 @@
                         </x-nav-link>
                         <x-nav-link :href="route('penitipan.hewan.index')" :active="request()->routeIs('penitipan.hewan.index')">
                             {{ 'Penitipan Hewan' }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('booking.konsultasi.manage')" :active="request()->routeIs('booking.konsultasi.manage')">
+                            {{ 'Booking Konsultasi' }}
                         </x-nav-link>
                     @endrole
                 </div>
