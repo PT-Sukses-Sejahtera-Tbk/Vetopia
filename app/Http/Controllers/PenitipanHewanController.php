@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PenitipanHewan;
+use App\Models\Hewan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,21 +11,16 @@ class PenitipanHewanController extends Controller
 {
     public function index()
     {
-        // Pastikan nama folder view sesuai (PenitipanHewan atau penitipanHewan)
-        return view('PenitipanHewan.index');
+        // Get authenticated user's hewans
+        $hewans = Hewan::where('user_id', auth()->id())->get();
+
+        return view('PenitipanHewan.index', compact('hewans'));
     }
 
-public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'nama_hewan' => 'required|string|max:255',
-            
-            // Validasi Umur Baru (Terpisah)
-            'umur_angka' => 'required|integer|min:1',
-            'satuan_umur' => 'required|in:Tahun,Bulan,Minggu',
-            
-            'spesies' => 'required|string|max:255',
-            'ras' => 'required|string|max:255',
+            'hewan_id' => 'required|exists:hewans,id',
             'alamat_rumah' => 'required|string',
             'tanggal_titip' => 'required|date|after_or_equal:today',
             'tanggal_ambil' => 'required|date|after_or_equal:tanggal_titip',
@@ -32,18 +28,19 @@ public function store(Request $request)
         ]);
 
         try {
-            // Gabungkan Angka + Satuan (Contoh: "5" + " " + "Bulan" = "5 Bulan")
-            $umur_lengkap = $request->umur_angka . ' ' . $request->satuan_umur;
+            // Get hewan data
+            $hewan = Hewan::findOrFail($request->hewan_id);
+
+            // Format umur
+            $umur_lengkap = $hewan->umur . ' Tahun';
 
             PenitipanHewan::create([
                 'user_id' => Auth::id(),
                 'nama_pemilik' => Auth::user()->name,
-                'nama_hewan' => $request->nama_hewan,
-                
-                'umur' => $umur_lengkap, // Simpan hasil gabungan
-                
-                'spesies' => $request->spesies,
-                'ras' => $request->ras,
+                'nama_hewan' => $hewan->nama,
+                'umur' => $umur_lengkap,
+                'spesies' => $hewan->jenis,
+                'ras' => $hewan->ras,
                 'alamat_rumah' => $request->alamat_rumah,
                 'tanggal_titip' => $request->tanggal_titip,
                 'tanggal_ambil' => $request->tanggal_ambil,
