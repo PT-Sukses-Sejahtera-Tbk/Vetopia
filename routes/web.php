@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/penitipan-hewan', [PenitipanHewanController::class, 'create'])->name('penitipan.hewan.create');
     Route::post('/penitipan-hewan', [PenitipanHewanController::class, 'store'])->name('penitipan.hewan.store');
     Route::get('/penitipan-hewan-manage', [PenitipanHewanController::class, 'index'])->name('penitipan.hewan.index');
+    Route::patch('/penitipan-hewan/{id}/status', [PenitipanHewanController::class, 'updateStatus'])->name('penitipan.hewan.updateStatus');
 
     // Temporary test route biar ga error
     Route::get('/dummy', function () {

@@ -11,13 +11,18 @@ class PenitipanHewanController extends Controller
 {
     public function index()
     {
+        // Doctors cannot access this page
+        if (auth()->user()->hasRole('doctor')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         // Get penitipan hewan records based on user role
         if (auth()->user()->hasRole('user')) {
             $penitipans = PenitipanHewan::where('user_id', auth()->id())
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
-            // Admin and doctor can see all records
+            // Admin can see all records
             $penitipans = PenitipanHewan::orderBy('created_at', 'desc')->get();
         }
 
@@ -68,5 +73,18 @@ class PenitipanHewanController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,dititip,selesai',
+        ]);
+
+        $penitipan = PenitipanHewan::findOrFail($id);
+        $penitipan->status = $request->status;
+        $penitipan->save();
+
+        return redirect()->route('penitipan.hewan.index')->with('success', 'Status berhasil diperbarui!');
     }
 }
