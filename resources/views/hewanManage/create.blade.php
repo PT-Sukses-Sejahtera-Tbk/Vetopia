@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4">
-                <a href="{{ route('hewan.index') }}" 
+                <a href="{{ route('hewan.index') }}"
                     class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:ring-4 focus:ring-gray-300">
                     Kembali
                 </a>
@@ -21,15 +21,22 @@
                         <!-- Pemilik -->
                         <div class="mb-4">
                             <label for="user_id" class="block text-sm font-medium text-gray-700">Pemilik</label>
-                            <select name="user_id" id="user_id" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Pilih Pemilik</option>
-                                @foreach(\App\Models\User::all() as $user)
-                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            @if (auth()->user()->hasRole('user'))
+                                <input type="text" value="{{ auth()->user()->name }}" disabled
+                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm">
+                                <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                            @else
+                                <select name="user_id" id="user_id" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="">Pilih Pemilik</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}"
+                                            {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                            {{ $user->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
                             @error('user_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -68,7 +75,8 @@
                         <!-- Umur -->
                         <div class="mb-4">
                             <label for="umur" class="block text-sm font-medium text-gray-700">Umur (tahun)</label>
-                            <input type="number" name="umur" id="umur" value="{{ old('umur') }}" required min="0"
+                            <input type="number" name="umur" id="umur" value="{{ old('umur') }}" required
+                                min="0"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @error('umur')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -77,7 +85,7 @@
 
                         <!-- Buttons -->
                         <div class="flex items-center justify-end gap-4">
-                            <a href="{{ route('hewan.index') }}" 
+                            <a href="{{ route('hewan.index') }}"
                                 class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                                 Batal
                             </a>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hewan;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HewanController extends Controller
@@ -13,8 +14,16 @@ class HewanController extends Controller
     public function index()
     {
         $title = "Manajemen Hewan";
-        $hewans = Hewan::with('pemilik')->get();
-        return view('admin/hewanManage/index', compact('title', 'hewans'));
+
+        // If user has 'user' role, only show their own hewans
+        if (auth()->user()->hasRole('user')) {
+            $hewans = Hewan::with('pemilik')->where('user_id', auth()->id())->get();
+        } else {
+            // Admin and doctor can see all hewans
+            $hewans = Hewan::with('pemilik')->get();
+        }
+
+        return view('hewanManage/index', compact('title', 'hewans'));
     }
 
     /**
@@ -23,7 +32,15 @@ class HewanController extends Controller
     public function create()
     {
         $title = "Tambah Hewan Baru";
-        return view('admin/hewanManage/create', compact('title'));
+
+        // Get users based on role
+        if (auth()->user()->hasRole('user')) {
+            $users = collect([auth()->user()]); // Only current user
+        } else {
+            $users = User::role('user')->get(); // All users with 'user' role for admin/doctor
+        }
+
+        return view('hewanManage/create', compact('title', 'users'));
     }
 
     /**
@@ -52,7 +69,7 @@ class HewanController extends Controller
     {
         $title = "Detail Hewan";
         $hewan->load(['pemilik', 'rekamMedis.dokter.user', 'rekamMedis.layanan']);
-        return view('admin/hewanManage/show', compact('title', 'hewan'));
+        return view('hewanManage/show', compact('title', 'hewan'));
     }
 
     /**
@@ -62,7 +79,15 @@ class HewanController extends Controller
     {
         $title = "Edit Hewan";
         $hewan->load('pemilik');
-        return view('admin/hewanManage/edit', compact('title', 'hewan'));
+
+        // Get users based on role
+        if (auth()->user()->hasRole('user')) {
+            $users = collect([auth()->user()]); // Only current user
+        } else {
+            $users = User::role('user')->get(); // All users with 'user' role for admin/doctor
+        }
+
+        return view('hewanManage/edit', compact('title', 'hewan', 'users'));
     }
 
     /**
