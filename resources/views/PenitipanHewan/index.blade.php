@@ -1,308 +1,229 @@
-@extends('layouts.main')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Manajemen Penitipan Hewan
+        </h2>
+    </x-slot>
 
-@section('container')
-    <div class="my-10 text-gray-900 font-sans text-center">
-        <p class="font-medium text-2xl">Form Penitipan Hewan</p>
-        <p class="text-sm font-normal">Lengkapi Informasi hewan kesayangan Anda untuk melakukan Penitipan Hewan</p>
-    </div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session('success'))
+                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                    role="alert">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
 
-    <div class="max-w-xl mx-auto px-4 mb-6">
-        @if (session('success'))
-            <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50"
-                role="alert">
-                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-                </svg>
-                <div>
-                    <span class="font-medium">Berhasil!</span> {{ session('success') }}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <!-- Table Container -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        ID
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Nama Hewan
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Nama Pemilik
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Spesies
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Tanggal Titip
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Tanggal Ambil
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Jenis Service
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Aksi
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @php
+                                    $i = 1;
+                                @endphp
+                                @forelse ($penitipans as $penitipan)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $i++ }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $penitipan->nama_hewan }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $penitipan->nama_pemilik }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $penitipan->spesies }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ \Carbon\Carbon::parse($penitipan->tanggal_titip)->format('d M Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ \Carbon\Carbon::parse($penitipan->tanggal_ambil)->format('d M Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                {{ $penitipan->jenis_service == 'pick-up' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
+                                                {{ ucfirst($penitipan->jenis_service) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            @if ($penitipan->status == 'pending')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                            @elseif($penitipan->status == 'approved')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
+                                            @elseif($penitipan->status == 'rejected')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Rejected</span>
+                                            @else
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ ucfirst($penitipan->status) }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button onclick="showDetail({{ $penitipan->id }})"
+                                                class="text-blue-600 hover:text-blue-900 mr-3">Detail</button>
+                                            <form action="#" method="POST" class="inline"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus penitipan ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="text-red-600 hover:text-red-900">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">
+                                            Belum ada data penitipan hewan
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        @endif
-
-        @if (session('error') || $errors->any())
-            <div class="flex p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
-                <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
-                </svg>
-                <div>
-                    <span class="font-medium">Gagal!</span>
-                    @if (session('error'))
-                        <p>{{ session('error') }}</p>
-                    @endif
-                    @if ($errors->any())
-                        <ul class="mt-1.5 list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-            </div>
-        @endif
+        </div>
     </div>
 
-    <div class="max-w-xl mx-auto px-4 pb-20">
-        <div class="bg-white rounded-3xl border border-gray-200 p-8 shadow-sm">
-            <form action="{{ route('penitipan.hewan.store') }}" method="POST" id="penitipanForm">
-                @csrf
-
-                <div class="mb-8">
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-vetopia-green rounded-lg flex items-center justify-center">
-                            <img src="{{ asset('images/catIcon.png') }}" alt="Cat Icon" class="w-5 h-5">
-                        </div>
-                        <h3 class="text-lg font-semibold">Informasi Hewan</h3>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="hewan_id" class="block text-sm font-medium text-gray-700 mb-2">Nama Hewan</label>
-                        <select id="hewan_id" name="hewan_id" class="w-full px-4 py-3 border border-gray-300 rounded-lg">
-                            <option value="">Pilih Hewan</option>
-                            @foreach ($hewans as $hewan)
-                                <option value="{{ $hewan->id }}" data-umur="{{ $hewan->umur }}"
-                                    data-jenis="{{ $hewan->jenis }}" data-ras="{{ $hewan->ras }}"
-                                    {{ old('hewan_id') == $hewan->id ? 'selected' : '' }}>
-                                    {{ $hewan->nama }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <span class="error-message text-sm hidden" id="error-hewan_id" style="color: #ef4444;">Pilih hewan
-                            terlebih dahulu</span>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="umur" class="block text-sm font-medium text-gray-700 mb-2">Umur</label>
-                        <input type="text" id="umur" name="umur" value="{{ old('umur') }}" readonly
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100"
-                            placeholder="Otomatis terisi">
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label for="spesies" class="block text-sm font-medium text-gray-700 mb-2">Spesies</label>
-                            <input type="text" id="spesies" name="spesies" value="{{ old('spesies') }}" readonly
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100"
-                                placeholder="Otomatis terisi">
-                        </div>
-
-                        <div>
-                            <label for="ras" class="block text-sm font-medium text-gray-700 mb-2">Ras</label>
-                            <input type="text" id="ras" name="ras" value="{{ old('ras') }}" readonly
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100"
-                                placeholder="Otomatis terisi">
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="alamat_rumah" class="block text-sm font-medium text-gray-700 mb-2">Alamat Rumah</label>
-                        <textarea id="alamat_rumah" name="alamat_rumah" rows="3"
-                            placeholder="Contoh: Jl. Cijerah Indah Blok B4 No. 12, Kel. Cijerah, Kec. Bandung Kulon, Kota Bandung, Jawa Barat, 40213"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none placeholder-gray-500">{{ old('alamat_rumah') }}</textarea>
-                        <span class="error-message text-sm hidden" id="error-alamat_rumah" style="color: #ef4444;">Alamat
-                            rumah harus diisi</span>
-                    </div>
-                </div>
-
-                <div class="mb-8">
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-vetopia-green rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold">Tanggal Titip</h3>
-                    </div>
-
-                    <div class="mb-4">
-                        <input type="date" id="tanggal_titip" name="tanggal_titip" value="{{ old('tanggal_titip') }}"
-                            min="{{ date('Y-m-d') }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg cursor-pointer">
-                        <span class="error-message text-sm hidden" id="error-tanggal_titip"
-                            style="color: #ef4444;">Tanggal titip harus diisi</span>
-                    </div>
-                </div>
-
-                <div class="mb-8">
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-vetopia-green rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold">Tanggal Ambil</h3>
-                    </div>
-
-                    <div class="mb-4">
-                        <input type="date" id="tanggal_ambil" name="tanggal_ambil"
-                            value="{{ old('tanggal_ambil') }}" min="{{ date('Y-m-d') }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg cursor-pointer">
-                        <span class="error-message text-sm hidden" id="error-tanggal_ambil"
-                            style="color: #ef4444;">Tanggal ambil harus diisi</span>
-                    </div>
-                </div>
-
-                <div class="mb-8">
-                    <label class="block text-sm font-medium text-gray-700 mb-4">Jenis Service</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button type="button"
-                            class="service-btn px-6 py-3 border-2 border-gray-300 rounded-lg font-medium hover:border-vetopia-green hover:bg-green-50 transition-colors {{ old('jenis_service') == 'pick-up' ? 'border-vetopia-green bg-green-50' : '' }}"
-                            data-value="pick-up">
-                            Pick - UP
-                        </button>
-                        <button type="button"
-                            class="service-btn px-6 py-3 border-2 border-gray-300 rounded-lg font-medium hover:border-vetopia-green hover:bg-green-50 transition-colors {{ old('jenis_service') == 'drop-off' ? 'border-vetopia-green bg-green-50' : '' }}"
-                            data-value="drop-off">
-                            Drop-Off
-                        </button>
-                    </div>
-                    <input type="hidden" id="jenis_service" name="jenis_service" value="{{ old('jenis_service') }}">
-                    <span class="error-message text-sm hidden" id="error-jenis_service" style="color: #ef4444;">Jenis
-                        service harus dipilih</span>
-                </div>
-
-                <button type="submit"
-                    class="w-full bg-vetopia-green text-black font-semibold py-4 rounded-full hover:bg-green-500 transition-colors">
-                    Konfirmasi Booking
+    <!-- Detail Modal -->
+    <div id="detailModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h3 class="text-xl font-semibold text-gray-900">Detail Penitipan Hewan</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
-            </form>
+            </div>
+            <div id="modalContent" class="mt-4">
+                <!-- Content will be loaded here -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Make date inputs clickable to open picker
-        document.getElementById('tanggal_titip').addEventListener('click', function() {
-            try {
-                this.showPicker();
-            } catch (e) {
-                // Fallback for browsers that don't support showPicker()
-                this.focus();
+        const penitipanData = @json($penitipans);
+
+        function showDetail(id) {
+            const penitipan = penitipanData.find(p => p.id === id);
+            if (!penitipan) return;
+
+            const content = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Nama Hewan</p>
+                            <p class="mt-1 text-sm text-gray-900">${penitipan.nama_hewan}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Nama Pemilik</p>
+                            <p class="mt-1 text-sm text-gray-900">${penitipan.nama_pemilik}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Umur</p>
+                            <p class="mt-1 text-sm text-gray-900">${penitipan.umur}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Spesies</p>
+                            <p class="mt-1 text-sm text-gray-900">${penitipan.spesies}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Ras</p>
+                            <p class="mt-1 text-sm text-gray-900">${penitipan.ras}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Jenis Service</p>
+                            <p class="mt-1 text-sm text-gray-900">${penitipan.jenis_service.toUpperCase()}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Tanggal Titip</p>
+                            <p class="mt-1 text-sm text-gray-900">${new Date(penitipan.tanggal_titip).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Tanggal Ambil</p>
+                            <p class="mt-1 text-sm text-gray-900">${new Date(penitipan.tanggal_ambil).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Alamat Rumah</p>
+                        <p class="mt-1 text-sm text-gray-900">${penitipan.alamat_rumah}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Status</p>
+                        <p class="mt-1">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                ${penitipan.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                  penitipan.status === 'approved' ? 'bg-green-100 text-green-800' : 
+                                  'bg-red-100 text-red-800'}">
+                                ${penitipan.status.charAt(0).toUpperCase() + penitipan.status.slice(1)}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
-        });
-
-        document.getElementById('tanggal_ambil').addEventListener('click', function() {
-            try {
-                this.showPicker();
-            } catch (e) {
-                // Fallback for browsers that don't support showPicker()
-                this.focus();
-            }
-        });
-
-        // Auto-fill hewan data when selected
-        document.getElementById('hewan_id').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-
-            if (selectedOption.value) {
-                // Fill the fields with selected hewan data
-                document.getElementById('umur').value = selectedOption.dataset.umur + ' Tahun';
-                document.getElementById('spesies').value = selectedOption.dataset.jenis;
-                document.getElementById('ras').value = selectedOption.dataset.ras;
-
-                // Hide error
-                document.getElementById('error-hewan_id').classList.add('hidden');
-                this.style.borderColor = '';
-                this.classList.remove('border-red-500');
-            } else {
-                // Clear fields if no selection
-                document.getElementById('umur').value = '';
-                document.getElementById('spesies').value = '';
-                document.getElementById('ras').value = '';
-            }
-        });
-
-        // Handle service button selection
-        document.querySelectorAll('.service-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Remove active state from all buttons
-                document.querySelectorAll('.service-btn').forEach(b => {
-                    b.classList.remove('border-vetopia-green', 'bg-green-50');
-                    b.classList.add('border-gray-300');
-                });
-
-                // Add active state to clicked button
-                this.classList.remove('border-gray-300');
-                this.classList.add('border-vetopia-green', 'bg-green-50');
-
-                // Set hidden input value
-                document.getElementById('jenis_service').value = this.dataset.value;
-
-                // Hide error if exists
-                document.getElementById('error-jenis_service').classList.add('hidden');
-            });
-        });
-
-        document.getElementById('penitipanForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Reset all error messages
-            document.querySelectorAll('.error-message').forEach(error => {
-                error.classList.add('hidden');
-            });
-            document.querySelectorAll('input, textarea, select').forEach(input => {
-                input.style.borderColor = '';
-                input.classList.remove('border-red-500');
-            });
-
-            let isValid = true;
-
-            // Validasi visual
-            const fields = ['hewan_id', 'alamat_rumah', 'tanggal_titip', 'tanggal_ambil', 'jenis_service'];
-
-            fields.forEach(field => {
-                const input = document.getElementById(field);
-                if (input) {
-                    const error = document.getElementById('error-' + field);
-                    // Cek jika kosong
-                    if (!input.value.trim()) {
-                        if (error) error.classList.remove('hidden');
-
-                        if (input.type !== 'hidden') {
-                            input.style.borderColor = '#ef4444';
-                            input.classList.add('border-red-500');
-                        }
-                        isValid = false;
-                    }
-                }
-            });
-
-            if (isValid) {
-                this.submit();
-            } else {
-                const firstError = document.querySelector('.border-red-500');
-                if (firstError) {
-                    firstError.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }
-            }
-        });
-
-        // Remove error when user starts typing or selecting
-        document.querySelectorAll('input, textarea, select').forEach(input => {
-            input.addEventListener('input', function() {
-                const error = document.getElementById('error-' + this.id);
-                if (error && this.value.trim()) {
-                    error.classList.add('hidden');
-                    this.style.borderColor = '';
-                    this.classList.remove('border-red-500');
-                }
-            });
-
-            input.addEventListener('change', function() {
-                const error = document.getElementById('error-' + this.id);
-                if (error && this.value.trim()) {
-                    error.classList.add('hidden');
-                    this.style.borderColor = '';
-                    this.classList.remove('border-red-500');
-                }
-            });
         });
     </script>
-@endsection
+</x-app-layout>

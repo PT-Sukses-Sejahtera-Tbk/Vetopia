@@ -41,7 +41,7 @@
             </a>
 
             <!-- Penitipan Hewan -->
-            <a href="{{ route('penitipan.hewan') }}"
+            <a href="{{ route('penitipan.hewan.create') }}"
                 class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
                 <div class="flex justify-center mb-6">
                     <div class="w-20 h-20 bg-vetopia-green rounded-2xl flex items-center justify-center">

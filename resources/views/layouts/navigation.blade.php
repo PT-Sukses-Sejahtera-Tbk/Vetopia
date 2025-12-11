@@ -20,6 +20,9 @@
                         <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
                             {{ 'Hewan Saya' }}
                         </x-nav-link>
+                        <x-nav-link :href="route('penitipan.hewan.index')" :active="request()->routeIs('penitipan.hewan.index')">
+                            {{ 'Status Penitipan' }}
+                        </x-nav-link>
                     @endrole
                     @role('doctor')
                         <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
@@ -39,7 +42,7 @@
                         <x-nav-link :href="route('admin.userManage.index')" :active="request()->routeIs('admin.userManage.index')">
                             {{ 'Manajemen User' }}
                         </x-nav-link>
-                        <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
+                        <x-nav-link :href="route('penitipan.hewan.index')" :active="request()->routeIs('penitipan.hewan.index')">
                             {{ 'Penitipan Hewan' }}
                         </x-nav-link>
                     @endrole

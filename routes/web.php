@@ -39,12 +39,14 @@ Route::middleware('auth')->group(function () {
         return view('rawatJalan/index');
     })->name('rawat.jalan');
 
-    Route::get('/penitipan-hewan', [PenitipanHewanController::class, 'index'])->name('penitipan.hewan');
+    // Penitipan Hewan
+    Route::get('/penitipan-hewan', [PenitipanHewanController::class, 'create'])->name('penitipan.hewan.create');
     Route::post('/penitipan-hewan', [PenitipanHewanController::class, 'store'])->name('penitipan.hewan.store');
+    Route::get('/penitipan-hewan-manage', [PenitipanHewanController::class, 'index'])->name('penitipan.hewan.index');
 
-    // Temporary test route for hewan view
+    // Temporary test route biar ga error
     Route::get('/dummy', function () {
-        return view('dummy.index'); // or whatever your view path is
+        return view('dummy.index');
     })->name('dummy');
 
     Route::middleware('role:admin')->group(function () {

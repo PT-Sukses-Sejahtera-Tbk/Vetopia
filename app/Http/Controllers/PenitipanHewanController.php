@@ -11,10 +11,25 @@ class PenitipanHewanController extends Controller
 {
     public function index()
     {
+        // Get penitipan hewan records based on user role
+        if (auth()->user()->hasRole('user')) {
+            $penitipans = PenitipanHewan::where('user_id', auth()->id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // Admin and doctor can see all records
+            $penitipans = PenitipanHewan::orderBy('created_at', 'desc')->get();
+        }
+
+        return view('PenitipanHewan.index', compact('penitipans'));
+    }
+
+    public function create()
+    {
         // Get authenticated user's hewans
         $hewans = Hewan::where('user_id', auth()->id())->get();
 
-        return view('PenitipanHewan.index', compact('hewans'));
+        return view('penitipanHewan', compact('hewans'));
     }
 
     public function store(Request $request)
@@ -48,7 +63,7 @@ class PenitipanHewanController extends Controller
                 'status' => 'pending',
             ]);
 
-            return redirect()->route('penitipan.hewan')->with('success', 'Permintaan penitipan berhasil dikirim!');
+            return redirect()->route('penitipan.hewan.create')->with('success', 'Permintaan penitipan berhasil dikirim!');
 
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
