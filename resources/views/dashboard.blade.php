@@ -6,7 +6,8 @@
             </h2>
 
             <div class="flex items-center gap-4">
-                {{-- Hewan avatars --}}
+                {{-- Hewan avatars (user only) --}}
+                @role('user')
                 <div class="flex items-center gap-2">
                     @if(isset($userHewans) && $userHewans->count())
                         @foreach($userHewans as $h)
@@ -28,6 +29,7 @@
 
                 {{-- Button add hewan (opens modal) --}}
                 <button id="openAddHewan" class="w-10 h-10 rounded-full bg-vetopia-green text-black flex items-center justify-center text-xl hover:bg-green-500 transition">+</button>
+                @endrole
             </div>
         </div>
     </x-slot>
@@ -130,52 +132,9 @@
                         <p class="text-sm text-gray-500">Daftar jadwal konsultasi dari pasien Anda</p>
                     </div>
 
-                    @if(isset($consultations) && $consultations->count())
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead class="border-b border-gray-200 bg-gray-50">
-                                    <tr>
-                                        <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
-                                        <th class="px-4 py-3 text-left font-semibold">Nama Pemilik</th>
-                                        <th class="px-4 py-3 text-left font-semibold">Hewan</th>
-                                        <th class="px-4 py-3 text-left font-semibold">Spesies</th>
-                                        <th class="px-4 py-3 text-left font-semibold">Keluhan</th>
-                                        <th class="px-4 py-3 text-left font-semibold">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($consultations as $consultation)
-                                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                            <td class="px-4 py-3">{{ \Carbon\Carbon::parse($consultation->tanggal_booking)->format('d M Y') }}</td>
-                                            <td class="px-4 py-3 font-medium">{{ $consultation->user->name ?? $consultation->nama_pemilik }}</td>
-                                            <td class="px-4 py-3">{{ $consultation->nama_hewan ?? '-' }}</td>
-                                            <td class="px-4 py-3">{{ $consultation->spesies ?? '-' }}</td>
-                                            <td class="px-4 py-3">
-                                                <span class="text-xs text-gray-600">{{ \Illuminate\Support\Str::limit($consultation->keluhan, 50) }}</span>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="inline-block px-3 py-1 rounded-full text-xs font-medium 
-                                                    @if($consultation->status === 'pending') bg-yellow-100 text-yellow-800
-                                                    @elseif($consultation->status === 'confirmed') bg-blue-100 text-blue-800
-                                                    @elseif($consultation->status === 'completed') bg-green-100 text-green-800
-                                                    @else bg-red-100 text-red-800 @endif">
-                                                    {{ ucfirst($consultation->status) }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="mt-6">
-                            {{ $consultations->links() }}
-                        </div>
-                    @else
-                        <div class="text-center py-8 text-gray-500">
-                            <p>Belum ada jadwal konsultasi.</p>
-                        </div>
-                    @endif
+                    <div class="text-center py-8 text-gray-500">
+                        <p>Belum ada jadwal konsultasi atau fitur masih dalam pengembangan.</p>
+                    </div>
                 </div>
 
                 <!-- Medical Records Section -->
@@ -185,57 +144,17 @@
                         <p class="text-sm text-gray-500">Daftar rekam medis dan hasil pemeriksaan yang telah Anda buat</p>
                     </div>
 
-                    @if(isset($medicalRecords) && $medicalRecords->count())
-                        <div class="space-y-4">
-                            @foreach($medicalRecords as $record)
-                                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                                        <div>
-                                            <p class="text-xs text-gray-500 uppercase font-semibold">Tanggal Periksa</p>
-                                            <p class="text-sm font-medium">{{ \Carbon\Carbon::parse($record->tanggal_periksa)->format('d M Y') }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500 uppercase font-semibold">Pasien (Hewan)</p>
-                                            <p class="text-sm font-medium">{{ $record->hewan->nama ?? '-' }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500 uppercase font-semibold">Pemilik</p>
-                                            <p class="text-sm font-medium">{{ $record->hewan->pemilik->name ?? '-' }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500 uppercase font-semibold">Layanan</p>
-                                            <p class="text-sm font-medium">{{ $record->layanan->nama ?? '-' }}</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Diagnosa</p>
-                                        <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded">{{ $record->diagnosa }}</p>
-                                    </div>
-
-                                    <div>
-                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Tindakan / Resep</p>
-                                        <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded whitespace-pre-wrap">{{ $record->tindakan }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="mt-6">
-                            {{ $medicalRecords->links() }}
-                        </div>
-                    @else
-                        <div class="text-center py-8 text-gray-500">
-                            <p>Belum ada rekam medis.</p>
-                        </div>
-                    @endif
+                    <div class="text-center py-8 text-gray-500">
+                        <p>Belum ada rekam medis atau fitur masih dalam pengembangan.</p>
+                    </div>
                 </div>
             </div>
             @endrole
         </div>
     </div>
 
-    <!-- Add Hewan Modal -->
+    <!-- Add Hewan Modal (user only) -->
+    @role('user')
     <div id="modalAddHewan" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
         <div class="bg-white rounded-xl w-full max-w-xl p-6 mx-4">
             <div class="flex items-center justify-between mb-4">
@@ -310,4 +229,5 @@
             }
         });
     </script>
+    @endrole
 </x-app-layout>

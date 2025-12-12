@@ -31,27 +31,6 @@ class DashboardController extends Controller
         // 1. LOGIKA UNTUK ADMIN & DOKTER
         // ------------------------------------------------
         if ($user->hasRole(['admin', 'doctor'])) {
-            // For doctors: get their consultation schedules and patient records
-            if ($user->hasRole('doctor')) {
-                $dokterProfile = Dokter::where('user_id', $user->id)->first();
-                
-                if ($dokterProfile) {
-                    // Get upcoming consultations for this doctor
-                    $consultations = BookingKonsultasi::with(['user', 'hewan'])
-                        ->where('status', '!=', 'cancelled')
-                        ->orderBy('tanggal_booking', 'asc')
-                        ->paginate(10);
-
-                    // Get all medical records created by this doctor
-                    $medicalRecords = RekamMedis::with(['hewan', 'hewan.pemilik', 'layanan'])
-                        ->where('dokter_id', $dokterProfile->id)
-                        ->orderBy('tanggal_periksa', 'desc')
-                        ->paginate(10);
-
-                    return view('dashboard', compact('consultations', 'medicalRecords'));
-                }
-            }
-            
             // Ambil data statistik untuk admin
             $data = [
                 'total_users' => User::role('user')->count(),
@@ -67,10 +46,11 @@ class DashboardController extends Controller
         // ------------------------------------------------
         // 2. LOGIKA UNTUK USER (PET OWNER)
         // ------------------------------------------------
-        // Ambil hewan pertama milik user untuk ditampilkan di "Pet Profile Card"
-        $mainPet = Hewan::where('user_id', $user->id)->first(); 
-        // Ambil semua hewan milik user untuk header/avatar list
         $userHewans = Hewan::where('user_id', $user->id)->get();
+        
+        // Get main pet from session or first hewan
+        $mainPetId = session('mainPet_id');
+        $mainPet = $mainPetId ? $userHewans->find($mainPetId) : $userHewans->first();
         
         // Ambil jadwal konsultasi yang akan datang (status selain completed/cancelled)
         $upcomingSchedules = BookingKonsultasi::with(['dokter', 'hewan'])
