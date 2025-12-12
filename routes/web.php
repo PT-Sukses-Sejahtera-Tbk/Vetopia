@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeminibotController;
 use App\Http\Controllers\BookingKonsultasiController;
 use App\Http\Controllers\PenitipanHewanController;
+use App\Http\Controllers\PemeriksaanLabController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
@@ -51,6 +52,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/penitipan-hewan-manage', [PenitipanHewanController::class, 'index'])->name('penitipan.hewan.index');
     Route::patch('/penitipan-hewan/{id}/status', [PenitipanHewanController::class, 'updateStatus'])->name('penitipan.hewan.updateStatus');
 
+    // === ROUTES PEMERIKSAAN LAB (USER) ===
+    Route::get('/pemeriksaan-lab', [PemeriksaanLabController::class, 'index'])->name('pemeriksaan.lab.index');
+    Route::post('/pemeriksaan-lab', [PemeriksaanLabController::class, 'store'])->name('pemeriksaan.lab.store');
+
+    // === ROUTES PEMERIKSAAN LAB (ADMIN / DOKTER) ===
+    Route::get('/admin/pemeriksaan-lab', [PemeriksaanLabController::class, 'manage'])->name('pemeriksaan.lab.manage');
+    Route::patch('/admin/pemeriksaan-lab/{id}', [PemeriksaanLabController::class, 'updateStatus'])->name('pemeriksaan.lab.updateStatus');
     // Temporary test route biar ga error
     Route::get('/dummy', function () {
         return view('dummy.index');

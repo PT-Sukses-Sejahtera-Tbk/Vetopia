@@ -51,6 +51,19 @@
                 <h3 class="text-2xl font-semibold mb-4">Penitipan Hewan</h3>
                 <p class="text-gray-600 leading-relaxed">Layanan Penitipan Hewan untuk menitipkan Hewan Anda</p>
             </a>
+
+            <a href="{{ route('pemeriksaan.lab.index') }}"
+                class="bg-white rounded-3xl border border-gray-200 p-8 text-center hover:shadow-lg transition-shadow block">
+                <div class="flex justify-center mb-6">
+                    <div class="w-20 h-20 bg-vetopia-green rounded-2xl flex items-center justify-center">
+                        {{-- Asset gambar sesuai request --}}
+                        <img src="{{ asset('images/PemeriksaanLabIcon.png') }}" alt="Pemeriksaan Lab" class="w-10 h-10">
+                    </div>
+                </div>
+                <h3 class="text-2xl font-semibold mb-4">Pemeriksaan Lab</h3>
+                <p class="text-gray-600 leading-relaxed">Layanan diagnosa medis akurat melalui pemeriksaan laboratorium lengkap.</p>
+            </a>
+            
         </div>
     </div>
 @endsection
