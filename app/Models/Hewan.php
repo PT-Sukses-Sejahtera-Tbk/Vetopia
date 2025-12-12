@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Hewan extends Model
 {
-    protected $fillable = ['user_id', 'nama', 'jenis', 'umur', 'ras'];
+    protected $fillable = ['user_id', 'nama', 'jenis', 'umur', 'ras', 'photo'];
 
     public function pemilik()
     {

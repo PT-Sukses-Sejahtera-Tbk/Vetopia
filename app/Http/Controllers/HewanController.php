@@ -54,11 +54,21 @@ class HewanController extends Controller
             'jenis' => ['required', 'string', 'max:255'],
             'ras' => ['required', 'string', 'max:255'],
             'umur' => ['required', 'integer', 'min:0'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
         ]);
 
-        Hewan::create($validated);
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('hewans', 'public');
+            $validated['photo'] = 'storage/' . $path;
+        }
 
-        return redirect()->route('hewan.index')
+        $hewan = Hewan::create($validated);
+
+        // Set as main pet and redirect to dashboard
+        session(['mainPet_id' => $hewan->id]);
+
+        return redirect()->route('dashboard')
             ->with('success', 'Hewan berhasil ditambahkan.');
     }
 
