@@ -31,6 +31,27 @@ class DashboardController extends Controller
         // 1. LOGIKA UNTUK ADMIN & DOKTER
         // ------------------------------------------------
         if ($user->hasRole(['admin', 'doctor'])) {
+            // For doctors: get their consultation schedules and patient records
+            if ($user->hasRole('doctor')) {
+                $dokterProfile = Dokter::where('user_id', $user->id)->first();
+                
+                if ($dokterProfile) {
+                    // Get upcoming consultations for this doctor
+                    $consultations = BookingKonsultasi::with(['user', 'hewan'])
+                        ->where('status', '!=', 'cancelled')
+                        ->orderBy('tanggal_booking', 'asc')
+                        ->paginate(10);
+
+                    // Get all medical records created by this doctor
+                    $medicalRecords = RekamMedis::with(['hewan', 'hewan.pemilik', 'layanan'])
+                        ->where('dokter_id', $dokterProfile->id)
+                        ->orderBy('tanggal_periksa', 'desc')
+                        ->paginate(10);
+
+                    return view('dashboard', compact('consultations', 'medicalRecords'));
+                }
+            }
+            
             // Ambil data statistik untuk admin
             $data = [
                 'total_users' => User::role('user')->count(),
