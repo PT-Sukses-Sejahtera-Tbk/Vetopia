@@ -58,6 +58,28 @@
                             @enderror
                         </div>
 
+                        <!-- Doctor Specific Fields -->
+                        <div id="doctorFields" class="{{ old('role', $user->roles->first()?->name) == 'doctor' ? '' : 'hidden' }}">
+                            <div class="mb-4">
+                                <label for="spesialisasi" class="block text-sm font-medium text-gray-700">Spesialisasi</label>
+                                <input type="text" name="spesialisasi" id="spesialisasi" 
+                                    value="{{ old('spesialisasi', $user->dokter?->spesialisasi) }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                @error('spesialisasi')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                                <textarea name="deskripsi" id="deskripsi" rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('deskripsi', $user->dokter?->deskripsi) }}</textarea>
+                                @error('deskripsi')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
                         <!-- Password -->
                         <div class="mb-4">
                             <label for="password" class="block text-sm font-medium text-gray-700">Password (Kosongkan jika tidak ingin mengubah)</label>
@@ -91,4 +113,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('role').addEventListener('change', function() {
+            const doctorFields = document.getElementById('doctorFields');
+            if (this.value === 'doctor') {
+                doctorFields.classList.remove('hidden');
+            } else {
+                doctorFields.classList.add('hidden');
+            }
+        });
+    </script>
 </x-app-layout>

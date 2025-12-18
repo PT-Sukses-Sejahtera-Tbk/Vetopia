@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Dokter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -51,6 +52,15 @@ class ManageUserController extends Controller
 
         $user->assignRole($validated['role']);
 
+        // Create Dokter record if role is doctor
+        if ($validated['role'] === 'doctor') {
+            Dokter::create([
+                'user_id' => $user->id,
+                'spesialisasi' => 'Belum diisi',
+                'deskripsi' => 'Belum diisi',
+            ]);
+        }
+
         return redirect()->route('admin.userManage.index')
             ->with('success', 'User berhasil ditambahkan.');
     }
@@ -69,7 +79,7 @@ class ManageUserController extends Controller
     public function edit(string $id)
     {
         $title = "Edit User";
-        $user = User::with('roles')->findOrFail($id);
+        $user = User::with(['roles', 'dokter'])->findOrFail($id);
         return view('admin/userManage/edit', compact('title', 'user'));
     }
 
@@ -86,6 +96,8 @@ class ManageUserController extends Controller
             'phone_number' => ['required', 'string', 'max:20'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'string', 'in:admin,doctor,user'],
+            'spesialisasi' => ['required_if:role,doctor', 'nullable', 'string', 'max:255'],
+            'deskripsi' => ['nullable', 'string'],
         ]);
 
         $user->update([
@@ -101,6 +113,23 @@ class ManageUserController extends Controller
         }
 
         $user->syncRoles([$validated['role']]);
+
+        // Handle Dokter record
+        if ($validated['role'] === 'doctor') {
+            $dokterData = [
+                'spesialisasi' => $validated['spesialisasi'] ?? 'Umum',
+                'deskripsi' => $validated['deskripsi'] ?? 'Dokter hewan',
+            ];
+
+            if ($user->dokter) {
+                $user->dokter->update($dokterData);
+            } else {
+                Dokter::create(array_merge($dokterData, ['user_id' => $user->id]));
+            }
+        } elseif ($user->dokter) {
+            // Remove Dokter record if role changed from doctor to something else
+            $user->dokter->delete();
+        }
 
         return redirect()->route('admin.userManage.index')
             ->with('success', 'User berhasil diperbarui.');
