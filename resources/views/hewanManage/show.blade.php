@@ -99,10 +99,6 @@
                                                     class="font-semibold">{{ $rekam->dokter->spesialisasi ?? '-' }}</span>
                                             </div>
                                             <div class="flex justify-between p-2 bg-slate-200 rounded-lg mb-4">
-                                                <span class="">Layanan</span>
-                                                <span class="font-semibold">{{ $rekam->layanan->nama ?? '-' }}</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-slate-200 rounded-lg mb-4">
                                                 <span class="">Tanggal Periksa</span>
                                                 <span
                                                     class="font-semibold">{{ \Carbon\Carbon::parse($rekam->tanggal_periksa)->format('d M Y') }}</span>

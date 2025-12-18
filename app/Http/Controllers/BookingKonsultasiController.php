@@ -105,17 +105,15 @@ class BookingKonsultasiController extends Controller
             ->where('user_id', $booking->user_id)
             ->first();
 
-        $layanan = \App\Models\Layanan::all();
         $dokter = \App\Models\Dokter::where('user_id', auth()->id())->first();
 
-        return view('bookConsultation.complete', compact('booking', 'hewan', 'layanan', 'dokter'));
+        return view('bookConsultation.complete', compact('booking', 'hewan', 'dokter'));
     }
 
     // Complete consultation and create rekam medis
     public function complete(Request $request, $id)
     {
         $request->validate([
-            'layanan_id' => 'required|exists:layanans,id',
             'diagnosa' => 'required|string',
             'tindakan' => 'required|string',
         ]);
@@ -142,7 +140,6 @@ class BookingKonsultasiController extends Controller
         \App\Models\RekamMedis::create([
             'hewan_id' => $hewan->id,
             'dokter_id' => $dokter->id,
-            'layanan_id' => $request->layanan_id,
             'tanggal_periksa' => $booking->tanggal_booking,
             'diagnosa' => $request->diagnosa,
             'tindakan' => $request->tindakan,

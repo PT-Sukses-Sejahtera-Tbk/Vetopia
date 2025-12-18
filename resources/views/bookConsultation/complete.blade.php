@@ -50,27 +50,6 @@
                         @csrf
                         <div class="space-y-6">
                             <div>
-                                <label for="layanan_id" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Layanan <span class="text-red-500">*</span>
-                                </label>
-                                <select id="layanan_id" name="layanan_id"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    required>
-                                    <option value="">Pilih Layanan</option>
-                                    @foreach ($layanan as $lay)
-                                        <option value="{{ $lay->id }}"
-                                            {{ old('layanan_id') == $lay->id ? 'selected' : '' }}>
-                                            {{ $lay->nama_layanan }} - Rp
-                                            {{ number_format($lay->harga, 0, ',', '.') }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('layanan_id')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
                                 <label for="diagnosa" class="block text-sm font-medium text-gray-700 mb-2">
                                     Diagnosa <span class="text-red-500">*</span>
                                 </label>
