@@ -13,6 +13,7 @@ class BookingKonsultasi extends Model
 
     protected $fillable = [
         'user_id',
+        'dokter_user_id',
         'nama_pemilik',
         'nama_hewan',
         'umur',
@@ -23,9 +24,15 @@ class BookingKonsultasi extends Model
         'status',
     ];
 
-    // Relasi balik ke User
+    // Relasi balik ke User (pemilik hewan)
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke Dokter (user dengan role doctor)
+    public function dokter()
+    {
+        return $this->belongsTo(User::class, 'dokter_user_id');
     }
 }

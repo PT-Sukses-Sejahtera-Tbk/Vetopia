@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BookingKonsultasi;
 use App\Models\Hewan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,10 @@ class BookingKonsultasiController extends Controller
         // Get authenticated user's hewans
         $hewans = Hewan::where('user_id', auth()->id())->get();
 
-        return view('bookingKonsultasi', compact('hewans'));
+        // Get all doctors (users with doctor role)
+        $dokters = User::role('doctor')->with('dokter')->get();
+
+        return view('bookingKonsultasi', compact('hewans', 'dokters'));
     }
 
     // Menyimpan data booking (Backend Logic utama)
@@ -24,6 +28,7 @@ class BookingKonsultasiController extends Controller
         // 1. Validasi
         $request->validate([
             'hewan_id' => 'required|exists:hewans,id',
+            'dokter_user_id' => 'required|exists:users,id',
             'keluhan' => 'required|string',
             'tanggal_booking' => 'required|date|after_or_equal:today',
         ]);
@@ -38,6 +43,7 @@ class BookingKonsultasiController extends Controller
             // 2. Simpan ke Database
             BookingKonsultasi::create([
                 'user_id' => Auth::id(),
+                'dokter_user_id' => $request->dokter_user_id,
                 'nama_pemilik' => Auth::user()->name,
                 'nama_hewan' => $hewan->nama,
                 'umur' => $umur_lengkap,
@@ -62,7 +68,7 @@ class BookingKonsultasiController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $bookings = BookingKonsultasi::orderBy('created_at', 'desc')->get();
+        $bookings = BookingKonsultasi::with('dokter')->orderBy('created_at', 'desc')->get();
         return view('bookConsultation.index', compact('bookings'));
     }
 

@@ -65,6 +65,22 @@
                             terlebih dahulu</span>
                     </div>
 
+                    {{-- Dokter --}}
+                    <div class="mb-4">
+                        <label for="dokter_user_id" class="block text-sm font-medium text-gray-700 mb-2">Pilih Dokter</label>
+                        <select id="dokter_user_id" name="dokter_user_id" class="w-full px-4 py-3 border border-gray-300 rounded-lg">
+                            <option value="">Pilih Dokter</option>
+                            @foreach ($dokters as $dokter)
+                                <option value="{{ $dokter->id }}"
+                                    {{ old('dokter_user_id') == $dokter->id ? 'selected' : '' }}>
+                                    {{ $dokter->name }}@if($dokter->dokter) - {{ $dokter->dokter->spesialisasi }}@endif
+                                </option>
+                            @endforeach
+                        </select>
+                        <span class="error-message text-sm hidden" id="error-dokter_user_id" style="color: #ef4444;">Pilih dokter
+                            terlebih dahulu</span>
+                    </div>
+
                     {{-- Umur (auto-filled from hewan) --}}
                     <div class="mb-4">
                         <label for="umur" class="block text-sm font-medium text-gray-700 mb-2">Umur</label>
@@ -165,7 +181,7 @@
             });
 
             let isValid = true;
-            const fields = ['hewan_id', 'keluhan', 'tanggal_booking'];
+            const fields = ['hewan_id', 'dokter_user_id', 'keluhan', 'tanggal_booking'];
 
             fields.forEach(field => {
                 const input = document.getElementById(field);

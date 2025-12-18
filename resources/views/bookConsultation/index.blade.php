@@ -70,6 +70,9 @@
                                             Pemilik</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            PJ</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Spesies</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -92,6 +95,8 @@
                                                 {{ $booking->nama_hewan }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->nama_pemilik }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $booking->dokter ? 'Dr. ' . $booking->dokter->name : '-' }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->spesies }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -117,7 +122,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">Belum
+                                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Belum
                                                 ada data pending</td>
                                         </tr>
                                     @endforelse
@@ -143,6 +148,9 @@
                                             Pemilik</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            PJ</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Spesies</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -165,6 +173,8 @@
                                                 {{ $booking->nama_hewan }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->nama_pemilik }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $booking->dokter ? 'Dr. ' . $booking->dokter->name : '-' }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->spesies }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -190,7 +200,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">Belum
+                                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Belum
                                                 ada data dikonfirmasi</td>
                                         </tr>
                                     @endforelse
@@ -216,6 +226,9 @@
                                             Pemilik</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            PJ</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Spesies</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -239,6 +252,8 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->nama_pemilik }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $booking->dokter ? 'Dr. ' . $booking->dokter->name : '-' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->spesies }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ \Carbon\Carbon::parse($booking->tanggal_booking)->format('d M Y') }}
@@ -256,7 +271,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
                                                 Belum ada data diperiksa</td>
                                         </tr>
                                     @endforelse
@@ -282,6 +297,9 @@
                                             Pemilik</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            PJ</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Spesies</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -305,6 +323,8 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->nama_pemilik }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $booking->dokter ? 'Dr. ' . $booking->dokter->name : '-' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $booking->spesies }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ \Carbon\Carbon::parse($booking->tanggal_booking)->format('d M Y') }}
@@ -318,7 +338,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
                                                 Belum ada data selesai</td>
                                         </tr>
                                     @endforelse
@@ -401,6 +421,10 @@
                         <div>
                             <p class="text-sm font-medium text-gray-500">Nama Pemilik</p>
                             <p class="mt-1 text-sm text-gray-900">${booking.nama_pemilik}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Dokter</p>
+                            <p class="mt-1 text-sm text-gray-900">${booking.dokter ? booking.dokter.name : '-'}</p>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-gray-500">Umur</p>
