@@ -6,7 +6,7 @@ use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ManageUserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GeminibotController;
+use App\Http\Controllers\GroqbotController;
 use App\Http\Controllers\BookingKonsultasiController;
 use App\Http\Controllers\PenitipanHewanController;
 use App\Http\Controllers\PemeriksaanLabController;
@@ -38,10 +38,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking-konsultasi/{id}/complete', [BookingKonsultasiController::class, 'showCompleteForm'])->name('booking.konsultasi.complete.form');
     Route::post('/booking-konsultasi/{id}/complete', [BookingKonsultasiController::class, 'complete'])->name('booking.konsultasi.complete');
 
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/konsultasi-online', [GroqbotController::class, 'index'])->name('chat.index');
+    Route::post('/konsultasi-chat', [GroqbotController::class, 'chat'])->name('chat.process');
+    });
+    /*
     Route::get('/konsultasi-online', function () {
         return view('konsultasiOnline/index');
     })->name('konsultasi.online');
-
+    */
     Route::get('/rawat-jalan', function () {
         return view('rawatJalan/index');
     })->name('rawat.jalan');
@@ -84,9 +89,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/hewan/{hewan}', [HewanController::class, 'destroy'])->name('hewan.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/konsultasi-online', [GeminibotController::class, 'index'])->name('chat.index');
-    Route::post('/konsultasi-chat', [GeminibotController::class, 'chat'])->name('chat.process');
-});
+
 
 require __DIR__ . '/auth.php';
