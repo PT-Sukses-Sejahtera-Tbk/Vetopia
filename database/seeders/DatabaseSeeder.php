@@ -7,6 +7,8 @@ use App\Models\Hewan;
 use App\Models\Dokter;
 use App\Models\Layanan;
 use App\Models\RekamMedis;
+use App\Models\PenitipanHewan;
+use App\Models\BookingKonsultasi;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -125,5 +127,12 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Hewans created successfully!');
         $this->command->info('Dokter and Layanan created successfully!');
         $this->command->info('Rekam Medis created successfully!');
+
+        // Call additional seeders
+        $this->call([
+            PenitipanHewanSeeder::class,
+            BookingKonsultasiSeeder::class,
+            RekamMedisSeeder::class,
+        ]);
     }
 }
