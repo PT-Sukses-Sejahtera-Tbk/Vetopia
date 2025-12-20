@@ -55,16 +55,16 @@
                                 <span class="font-medium">{{ $mainPet->nama ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between mb-4">
-                                <span class="font-semibold">Umur:</span>
-                                <span class="font-medium">{{ isset($mainPet) ? $mainPet->umur . ' tahun' : '-' }}</span>
-                            </div>
-                            <div class="flex justify-between mb-4">
-                                <span class="font-semibold">Jenis:</span>
+                                <span class="font-semibold">Species:</span>
                                 <span class="font-medium">{{ $mainPet->jenis ?? '-' }}</span>
                             </div>
-                            <div class="flex justify-between mb-1">
-                                <span class="font-semibold">Breed:</span>
+                            <div class="flex justify-between mb-4">
+                                <span class="font-semibold">Ras:</span>
                                 <span class="font-medium">{{ $mainPet->ras ?? '-' }}</span>
+                            </div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-semibold">Umur:</span>
+                                <span class="font-medium">{{ isset($mainPet) ? $mainPet->umur . ' tahun' : '-' }}</span>
                             </div>
                         </div>
                     </div>
