@@ -44,7 +44,7 @@ class DashboardController extends Controller
 
         $upcomingSchedules = BookingKonsultasi::with(['dokter'])
             ->where('user_id', $user->id)
-            ->whereIn('status', ['pending', 'confirmed', 'approved'])
+            ->whereIn('status', ['pending', 'dikonfirmasi', 'diperiksa'])
             ->orderBy('tanggal_booking', 'asc')
             ->take(3)
             ->get();

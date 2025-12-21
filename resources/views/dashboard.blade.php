@@ -40,16 +40,6 @@
                         <p class="text-sm text-gray-500">Jadwal konsultasi yang akan datang</p>
                     </div>
 
-                        <div class="mb-6">
-                        {{-- Simple calendar placeholder (static) --}}
-                        <div class="w-full h-72 bg-gray-50 rounded-xl p-6 flex items-center justify-center text-gray-400">
-                            <div class="text-center">
-                                <div class="text-2xl font-semibold">{{ now()->format('M') }}</div>
-                                <div class="text-4xl mt-2">{{ now()->format('d') }}</div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div>
                         @if(isset($upcomingSchedules) && $upcomingSchedules->count())
                             @foreach($upcomingSchedules as $schedule)
@@ -57,6 +47,22 @@
                                     <div class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($schedule->tanggal_booking)->format('d M Y') }}</div>
                                     <div class="font-medium text-base">{{ $schedule->title ?? ($schedule->layanan->nama ?? 'Konsultasi') }}</div>
                                     <div class="text-sm text-gray-500">Dokter: {{ $schedule->dokter->user->name ?? ($schedule->dokter->name ?? '-') }}</div>
+                                    <div class="mt-2">
+                                        <span class="inline-block px-2 py-1 text-xs rounded-full 
+                                            @if($schedule->status == 'pending') bg-yellow-100 text-yellow-800
+                                            @elseif($schedule->status == 'dikonfirmasi') bg-blue-100 text-blue-800
+                                            @elseif($schedule->status == 'diperiksa') bg-purple-100 text-purple-800
+                                            @elseif($schedule->status == 'selesai') bg-green-100 text-green-800
+                                            @else bg-gray-100 text-gray-800
+                                            @endif">
+                                            @if($schedule->status == 'pending') Pending
+                                            @elseif($schedule->status == 'dikonfirmasi') Dikonfirmasi
+                                            @elseif($schedule->status == 'diperiksa') Diperiksa
+                                            @elseif($schedule->status == 'selesai') Selesai
+                                            @else {{ ucfirst($schedule->status) }}
+                                            @endif
+                                        </span>
+                                    </div>
                                 </div>
                             @endforeach
                         @else

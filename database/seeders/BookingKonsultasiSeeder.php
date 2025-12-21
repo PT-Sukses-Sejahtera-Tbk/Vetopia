@@ -47,7 +47,7 @@ class BookingKonsultasiSeeder extends Seeder
                 'ras' => 'Persian',
                 'keluhan' => 'Bulu rontok berlebihan dan sering menggaruk-garuk',
                 'tanggal_booking' => '2025-12-24',
-                'status' => 'approved',
+                'status' => 'pending',
             ],
             [
                 'user_id' => $users->count() > 1 ? $users->get(1)->id : $users->first()->id,
@@ -59,7 +59,7 @@ class BookingKonsultasiSeeder extends Seeder
                 'ras' => 'Beagle',
                 'keluhan' => 'Check-up rutin dan vaksinasi tahunan',
                 'tanggal_booking' => '2025-12-22',
-                'status' => 'completed',
+                'status' => 'selesai',
             ],
             [
                 'user_id' => $users->count() > 1 ? $users->get(1)->id : $users->first()->id,
@@ -83,7 +83,7 @@ class BookingKonsultasiSeeder extends Seeder
                 'ras' => 'Golden Retriever',
                 'keluhan' => 'Vaksinasi pertama untuk anak anjing',
                 'tanggal_booking' => '2025-12-21',
-                'status' => 'completed',
+                'status' => 'selesai',
             ],
         ];
 
