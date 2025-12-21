@@ -4,33 +4,6 @@
             <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
                 {{ __('Selamat datang, ') }}@role('doctor')Dr. @endrole{{ Auth::user()->name }}!
             </h2>
-
-            <div class="flex items-center gap-4">
-                {{-- Hewan avatars (user only) --}}
-                @role('user')
-                <div class="flex items-center gap-2">
-                    @if(isset($userHewans) && $userHewans->count())
-                        @foreach($userHewans as $h)
-                            <form method="POST" action="{{ route('dashboard.setPet', $h->id) }}" class="inline">
-                                @csrf
-                                <button type="submit" title="{{ $h->nama }}" class="w-10 h-10 rounded-full overflow-hidden border-2 transition {{ ($mainPet && $mainPet->id === $h->id) ? 'border-vetopia-green' : 'border-gray-200' }} hover:border-vetopia-green">
-                                    @if(isset($h->photo) && $h->photo)
-                                        <img src="{{ asset($h->photo) }}" alt="{{ $h->nama }}" class="w-full h-full object-cover">
-                                    @else
-                                        <div class="w-full h-full bg-gray-200 flex items-center justify-center text-sm text-gray-600">{{ substr($h->nama,0,1) }}</div>
-                                    @endif
-                                </button>
-                            </form>
-                        @endforeach
-                    @else
-                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-600">-</div>
-                    @endif
-                </div>
-
-                {{-- Button add hewan (opens modal) --}}
-                <button id="openAddHewan" class="w-10 h-10 rounded-full bg-vetopia-green text-black flex items-center justify-center text-xl hover:bg-green-500 transition">+</button>
-                @endrole
-            </div>
         </div>
     </x-slot>
 
@@ -38,36 +11,26 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @role('user')
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Pet Profile Card -->
-                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                    <div class="p-6">
-                        <div class="rounded-xl overflow-hidden">
-                            @if(isset($mainPet) && ($mainPet->photo ?? false))
-                                <img src="{{ asset($mainPet->photo) }}" alt="{{ $mainPet->nama }}" class="w-full h-72 object-cover">
-                            @else
-                                <img src="{{ asset('images/home/pet-placeholder.png') }}" alt="pet" class="w-full h-72 object-cover">
-                            @endif
+                <div class="bg-white rounded-2xl border border-gray-200 p-8">
+                    <h3 class="text-lg font-semibold mb-4">Hewan Terdaftar : {{ $userHewans->count() }}</h3>
+                    
+                    @if($userHewans->count() > 0)
+                        <div class="mb-6 space-y-2">
+                            @foreach($userHewans as $hewan)
+                                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-sm font-bold text-orange-600">
+                                            {{ strtoupper(substr($hewan->nama, 0, 2)) }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">{{ $hewan->nama }}</p>
+                                        <p class="text-sm text-gray-500">{{ $hewan->jenis }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-
-                        <div class="mt-6 text-gray-700 text-lg">
-                            <div class="flex justify-between mb-4">
-                                <span class="font-semibold">Nama:</span>
-                                <span class="font-medium">{{ $mainPet->nama ?? '-' }}</span>
-                            </div>
-                            <div class="flex justify-between mb-4">
-                                <span class="font-semibold">Species:</span>
-                                <span class="font-medium">{{ $mainPet->jenis ?? '-' }}</span>
-                            </div>
-                            <div class="flex justify-between mb-4">
-                                <span class="font-semibold">Ras:</span>
-                                <span class="font-medium">{{ $mainPet->ras ?? '-' }}</span>
-                            </div>
-                            <div class="flex justify-between mb-1">
-                                <span class="font-semibold">Umur:</span>
-                                <span class="font-medium">{{ isset($mainPet) ? $mainPet->umur . ' tahun' : '-' }}</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
 
                 <!-- Upcoming Schedule Card -->
@@ -152,82 +115,4 @@
             @endrole
         </div>
     </div>
-
-    <!-- Add Hewan Modal (user only) -->
-    @role('user')
-    <div id="modalAddHewan" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl w-full max-w-xl p-6 mx-4">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold">Tambah Data Hewan</h3>
-                <button id="closeAddHewan" class="text-gray-500">&times;</button>
-            </div>
-
-            <form id="formAddHewan" action="{{ route('hewan.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
-                        <input type="text" name="nama" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Umur (tahun)</label>
-                        <input type="number" name="umur" min="0" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jenis</label>
-                        <input type="text" name="jenis" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Ras / Breed</label>
-                        <input type="text" name="ras" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Foto Hewan (opsional)</label>
-                        <input type="file" name="photo" accept="image/*" class="w-full">
-                        <p class="text-xs text-gray-400 mt-1">Format: jpeg,png,gif,webp — Maks 5MB</p>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex justify-end gap-3">
-                    <button type="button" id="cancelAddHewan" class="px-4 py-2 rounded-lg border border-gray-300">Batal</button>
-                    <button type="submit" class="px-4 py-2 rounded-lg bg-vetopia-green text-black font-medium">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        const openBtn = document.getElementById('openAddHewan');
-        const modal = document.getElementById('modalAddHewan');
-        const closeBtn = document.getElementById('closeAddHewan');
-        const cancelBtn = document.getElementById('cancelAddHewan');
-
-        if (openBtn) openBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        });
-        if (closeBtn) closeBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        });
-        if (cancelBtn) cancelBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        });
-
-        // Close modal when clicking outside dialog
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        });
-    </script>
-    @endrole
 </x-app-layout>

@@ -27,11 +27,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // ------------------------------------------------
-        // 1. LOGIKA UNTUK ADMIN & DOKTER
-        // ------------------------------------------------
         if ($user->hasRole(['admin', 'doctor'])) {
-            // Ambil data statistik untuk admin
             $data = [
                 'total_users' => User::role('user')->count(),
                 'total_hewan' => Hewan::count(),
@@ -39,30 +35,24 @@ class DashboardController extends Controller
                 'pending_penitipan' => PenitipanHewan::where('status', 'pending')->count(),
                 'recent_users' => User::role('user')->latest()->take(5)->get(),
             ];
-            
+
             return view('dashboard', compact('data'));
         }
 
-        // ------------------------------------------------
-        // 2. LOGIKA UNTUK USER (PET OWNER)
-        // ------------------------------------------------
         $userHewans = Hewan::where('user_id', $user->id)->get();
-        
-        // Get main pet from session or first hewan
-        $mainPetId = session('mainPet_id');
-        $mainPet = $mainPetId ? $userHewans->find($mainPetId) : $userHewans->first();
-        
-        // Ambil jadwal konsultasi yang akan datang (status selain completed/cancelled)
-        $upcomingSchedules = BookingKonsultasi::with(['dokter', 'hewan'])
-                            ->where('user_id', $user->id)
-                            ->whereIn('status', ['pending', 'confirmed', 'approved']) // Sesuaikan status dengan database Anda
-                            ->orderBy('tanggal_booking', 'asc')
-                            ->take(3)
-                            ->get();
+        $mainPet = $userHewans->first();
 
-        // (Opsional) Ambil riwayat medis jika ada model RekamMedis yang terhubung
-        // $history = ...
+        $upcomingSchedules = BookingKonsultasi::with(['dokter'])
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['pending', 'confirmed', 'approved'])
+            ->orderBy('tanggal_booking', 'asc')
+            ->take(3)
+            ->get();
 
-        return view('dashboard', compact('mainPet', 'upcomingSchedules', 'userHewans'));
+        return view('dashboard', [
+            'mainPet' => $mainPet,
+            'upcomingSchedules' => $upcomingSchedules,
+            'userHewans' => $userHewans,
+        ]);
     }
 }

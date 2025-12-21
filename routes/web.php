@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ManageUserController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GroqbotController;
 use App\Http\Controllers\BookingKonsultasiController;
@@ -14,9 +15,7 @@ use App\Http\Controllers\PemeriksaanLabController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/hubungi-kami', function () {
     $title = 'Hubungi Kami'; // <-- Tambahkan variabel title
@@ -39,8 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/booking-konsultasi/{id}/complete', [BookingKonsultasiController::class, 'complete'])->name('booking.konsultasi.complete');
 
     Route::middleware(['auth'])->group(function () {
-    Route::get('/konsultasi-online', [GroqbotController::class, 'index'])->name('chat.index');
-    Route::post('/konsultasi-chat', [GroqbotController::class, 'chat'])->name('chat.process');
+        Route::get('/konsultasi-online', [GroqbotController::class, 'index'])->name('chat.index');
+        Route::post('/konsultasi-chat', [GroqbotController::class, 'chat'])->name('chat.process');
     });
     /*
     Route::get('/konsultasi-online', function () {
