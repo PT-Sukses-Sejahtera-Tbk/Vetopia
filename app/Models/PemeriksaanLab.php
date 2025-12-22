@@ -22,6 +22,8 @@ class PemeriksaanLab extends Model
         'keluhan_atau_alasan',
         'tanggal_booking',
         'status',
+        'hasil_pemeriksaan',
+        'catatan_dokter',
     ];
 
     // Relasi ke User

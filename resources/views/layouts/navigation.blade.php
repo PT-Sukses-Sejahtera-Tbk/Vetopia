@@ -31,6 +31,9 @@
                         <x-nav-link :href="route('booking.konsultasi.manage')" :active="request()->routeIs('booking.konsultasi.manage')">
                             {{ 'Antrean Konsultasi' }}
                         </x-nav-link>
+                        <x-nav-link :href="route('pemeriksaan.lab.manage')" :active="request()->routeIs('pemeriksaan.lab.manage')">
+                            {{ 'Pemeriksaan Lab' }}
+                        </x-nav-link>
                         <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
                             {{ 'Rawat Inap' }}
                         </x-nav-link>
@@ -47,6 +50,9 @@
                         </x-nav-link>
                         <x-nav-link :href="route('booking.konsultasi.manage')" :active="request()->routeIs('booking.konsultasi.manage')">
                             {{ 'Booking Konsultasi' }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('pemeriksaan.lab.manage')" :active="request()->routeIs('pemeriksaan.lab.manage')">
+                            {{ 'Pemeriksaan Lab' }}
                         </x-nav-link>
                     @endrole
                 </div>

@@ -56,13 +56,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/penitipan-hewan-manage', [PenitipanHewanController::class, 'index'])->name('penitipan.hewan.index');
     Route::patch('/penitipan-hewan/{id}/status', [PenitipanHewanController::class, 'updateStatus'])->name('penitipan.hewan.updateStatus');
 
-    // === ROUTES PEMERIKSAAN LAB (USER) ===
+// === ROUTES PEMERIKSAAN LAB (USER) ===
     Route::get('/pemeriksaan-lab', [PemeriksaanLabController::class, 'index'])->name('pemeriksaan.lab.index');
     Route::post('/pemeriksaan-lab', [PemeriksaanLabController::class, 'store'])->name('pemeriksaan.lab.store');
 
     // === ROUTES PEMERIKSAAN LAB (ADMIN / DOKTER) ===
     Route::get('/admin/pemeriksaan-lab', [PemeriksaanLabController::class, 'manage'])->name('pemeriksaan.lab.manage');
     Route::patch('/admin/pemeriksaan-lab/{id}', [PemeriksaanLabController::class, 'updateStatus'])->name('pemeriksaan.lab.updateStatus');
+    
+    // Route Form Isi Hasil
+    Route::get('/admin/pemeriksaan-lab/{id}/complete', [PemeriksaanLabController::class, 'showCompleteForm'])->name('pemeriksaan.lab.complete.form');
+    Route::post('/admin/pemeriksaan-lab/{id}/complete', [PemeriksaanLabController::class, 'complete'])->name('pemeriksaan.lab.complete');;
     // Temporary test route biar ga error
     Route::get('/dummy', function () {
         return view('dummy.index');

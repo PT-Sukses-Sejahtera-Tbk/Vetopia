@@ -10,13 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class PemeriksaanLabController extends Controller
 {
     // === BAGIAN USER (CUSTOMER) ===
-
     public function index()
     {
-        // Ambil data hewan milik user yang sedang login
         $hewans = Hewan::where('user_id', auth()->id())->get();
-
-        // REVISI: Memanggil file resources/views/pemeriksaanLab.blade.php
         return view('pemeriksaanLab', compact('hewans'));
     }
 
@@ -51,7 +47,6 @@ class PemeriksaanLabController extends Controller
                 'status' => 'pending',
             ]);
 
-            // Redirect kembali ke halaman form dengan pesan sukses
             return redirect()->route('pemeriksaan.lab.index')->with('success', 'Booking pemeriksaan lab berhasil dikirim!');
 
         } catch (\Exception $e) {
@@ -60,8 +55,7 @@ class PemeriksaanLabController extends Controller
     }
 
     // === BAGIAN ADMIN / DOKTER (Manajemen) ===
-    // Nantinya view untuk ini baru bisa diletakkan di folder, misal: resources/views/pemeriksaanLab/manage.blade.php
-    
+
     public function manage()
     {
         if (!auth()->user()->hasAnyRole(['admin', 'doctor'])) {
@@ -69,9 +63,6 @@ class PemeriksaanLabController extends Controller
         }
 
         $pemeriksaans = PemeriksaanLab::orderBy('created_at', 'desc')->get();
-        
-        // Contoh jika nanti Anda buat view admin: return view('pemeriksaanLab.manage', compact('pemeriksaans'));
-        // Untuk sekarang saya komen dulu atau sesuaikan dengan kebutuhan Anda
         return view('pemeriksaanLab.manage', compact('pemeriksaans')); 
     }
 
@@ -82,7 +73,7 @@ class PemeriksaanLabController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,dikonfirmasi,selesai,dibatalkan',
+            'status' => 'required|in:pending,dikonfirmasi,selesai,dibatalkan,menunggu_approval',
         ]);
 
         $lab = PemeriksaanLab::findOrFail($id);
@@ -90,5 +81,42 @@ class PemeriksaanLabController extends Controller
         $lab->save();
 
         return redirect()->route('pemeriksaan.lab.manage')->with('success', 'Status pemeriksaan berhasil diperbarui!');
+    }
+
+    // Menampilkan Form Pengisian Hasil Lab
+    public function showCompleteForm($id)
+    {
+        if (!auth()->user()->hasAnyRole(['admin', 'doctor'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $lab = PemeriksaanLab::findOrFail($id);
+        
+        // Perbaikan: Kirim variabel $lab (single object), bukan collection
+        return view('pemeriksaanLab.complete', compact('lab'));
+    }
+
+    // Menyimpan Hasil Lab
+    public function complete(Request $request, $id)
+    {
+        if (!auth()->user()->hasAnyRole(['admin', 'doctor'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'hasil_pemeriksaan' => 'required|string',
+            'catatan_dokter' => 'nullable|string',
+        ]);
+
+        $lab = PemeriksaanLab::findOrFail($id);
+        
+        $lab->update([
+            'hasil_pemeriksaan' => $request->hasil_pemeriksaan,
+            'catatan_dokter' => $request->catatan_dokter,
+            'status' => 'menunggu_approval', // Kirim ke Admin untuk Approval
+        ]);
+
+        return redirect()->route('pemeriksaan.lab.manage')
+            ->with('success', 'Hasil pemeriksaan disimpan. Menunggu approval Admin.');
     }
 }
