@@ -11,9 +11,18 @@ use App\Http\Controllers\GroqbotController;
 use App\Http\Controllers\BookingKonsultasiController;
 use App\Http\Controllers\PenitipanHewanController;
 use App\Http\Controllers\PemeriksaanLabController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
+
+// Midtrans notification webhook (must be outside auth middleware)
+Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('payment.notification');
+
+// Midtrans redirect URLs (must be outside auth middleware)
+Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
+Route::get('/payment/unfinish', [PaymentController::class, 'unfinish'])->name('payment.unfinish');
+Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -31,11 +40,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking-konsultasi', [BookingKonsultasiController::class, 'index'])->name('booking.konsultasi');
     Route::post('/booking-konsultasi', [BookingKonsultasiController::class, 'store'])->name('booking.konsultasi.store');
 
+    // Patient booking history
+    Route::get('/my-bookings', [BookingKonsultasiController::class, 'myBookings'])->name('booking.myBookings');
+
     // Doctor booking management routes
     Route::get('/booking-konsultasi-manage', [BookingKonsultasiController::class, 'manage'])->name('booking.konsultasi.manage');
     Route::patch('/booking-konsultasi/{id}/status', [BookingKonsultasiController::class, 'updateStatus'])->name('booking.konsultasi.updateStatus');
     Route::get('/booking-konsultasi/{id}/complete', [BookingKonsultasiController::class, 'showCompleteForm'])->name('booking.konsultasi.complete.form');
     Route::post('/booking-konsultasi/{id}/complete', [BookingKonsultasiController::class, 'complete'])->name('booking.konsultasi.complete');
+
+    // Payment routes
+    Route::get('/payment/{bookingId}', [PaymentController::class, 'show'])->name('payment.show');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/konsultasi-online', [GroqbotController::class, 'index'])->name('chat.index');

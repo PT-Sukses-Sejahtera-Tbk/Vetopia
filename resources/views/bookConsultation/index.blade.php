@@ -45,6 +45,12 @@
                                 </a>
                             </li>
                             <li class="me-2">
+                                <a href="#" data-tab="menunggu-pembayaran" onclick="switchTab(event, 'menunggu-pembayaran')"
+                                    class="tab-link inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
+                                    Menunggu Pembayaran
+                                </a>
+                            </li>
+                            <li class="me-2">
                                 <a href="#" data-tab="selesai" onclick="switchTab(event, 'selesai')"
                                     class="tab-link inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">
                                     Selesai
@@ -280,6 +286,76 @@
                         </div>
                     </div>
 
+                    <!-- Menunggu Pembayaran Tab Content -->
+                    <div id="menunggu-pembayaran-content" class="tab-content hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            ID</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Nama Hewan</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Pemilik</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            PJ</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Spesies</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Tanggal Booking</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Biaya</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @php $menungguPembayaranData = $bookings->where('status', 'menunggu pembayaran'); @endphp
+                                    @forelse ($menungguPembayaranData as $index => $booking)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {{ $index + 1 }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {{ $booking->nama_hewan }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $booking->nama_pemilik }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $booking->dokter ? 'Dr. ' . $booking->dokter->name : '-' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $booking->spesies }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ \Carbon\Carbon::parse($booking->tanggal_booking)->format('d M Y') }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                                                Rp {{ number_format($booking->biaya, 0, ',', '.') }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                                <button onclick="showDetail({{ $booking->id }})"
+                                                    class="text-blue-600 hover:text-blue-900">
+                                                    Detail
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                                                Tidak ada booking menunggu pembayaran
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- Selesai Tab Content -->
                     <div id="selesai-content" class="tab-content hidden">
                         <div class="overflow-x-auto">
@@ -406,6 +482,9 @@
             } else if (booking.status === 'diperiksa') {
                 statusLabel = 'Diperiksa';
                 statusClass = 'bg-purple-100 text-purple-800';
+            } else if (booking.status === 'menunggu pembayaran') {
+                statusLabel = 'Menunggu Pembayaran';
+                statusClass = 'bg-orange-100 text-orange-800';
             } else if (booking.status === 'selesai') {
                 statusLabel = 'Selesai';
                 statusClass = 'bg-green-100 text-green-800';
@@ -447,6 +526,12 @@
                         <p class="text-sm font-medium text-gray-500">Keluhan</p>
                         <p class="mt-1 text-sm text-gray-900">${booking.keluhan}</p>
                     </div>
+                    ${booking.biaya ? `
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Biaya Konsultasi</p>
+                        <p class="mt-1 text-lg font-semibold text-green-600">Rp ${parseInt(booking.biaya).toLocaleString('id-ID')}</p>
+                    </div>
+                    ` : ''}
                     <div>
                         <p class="text-sm font-medium text-gray-500">Status</p>
                         <p class="mt-1">
@@ -455,6 +540,17 @@
                             </span>
                         </p>
                     </div>
+                    ${booking.status === 'menunggu pembayaran' && booking.user_id === {{ auth()->id() }} ? `
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <a href="/payment/${booking.id}" 
+                           class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Bayar Sekarang
+                        </a>
+                    </div>
+                    ` : ''}
                 </div>
             `;
 

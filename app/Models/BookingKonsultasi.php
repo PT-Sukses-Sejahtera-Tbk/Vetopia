@@ -22,6 +22,7 @@ class BookingKonsultasi extends Model
         'keluhan',
         'tanggal_booking',
         'status',
+        'biaya',
     ];
 
     // Relasi balik ke User (pemilik hewan)

@@ -11,18 +11,6 @@ use App\Models\PenitipanHewan;
 
 class DashboardController extends Controller
 {
-    public function setPet(Hewan $hewan)
-    {
-        // Verify user owns this hewan
-        if ($hewan->user_id !== auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Unauthorized');
-        }
-
-        session(['mainPet_id' => $hewan->id]);
-
-        return redirect()->route('dashboard')->with('success', 'Hewan dipilih.');
-    }
-
     public function index()
     {
         $user = Auth::user();

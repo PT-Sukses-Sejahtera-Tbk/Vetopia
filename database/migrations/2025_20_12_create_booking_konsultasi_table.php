@@ -23,8 +23,9 @@ return new class extends Migration {
             $table->text('keluhan');
             $table->date('tanggal_booking');
 
-            // Status booking (Pending, Disetujui, Selesai, Dibatalkan)
+            // Status booking (pending, dikonfirmasi, diperiksa, menunggu pembayaran, selesai)
             $table->string('status')->default('pending');
+            $table->decimal('biaya', 10, 2)->nullable(); // Biaya konsultasi
             $table->timestamps();
         });
     }

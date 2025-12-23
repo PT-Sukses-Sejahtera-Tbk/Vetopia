@@ -20,6 +20,9 @@
                         <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
                             {{ 'Hewan Saya' }}
                         </x-nav-link>
+                        <x-nav-link :href="route('booking.myBookings')" :active="request()->routeIs('booking.myBookings')">
+                            {{ 'Riwayat Booking' }}
+                        </x-nav-link>
                         <x-nav-link :href="route('penitipan.hewan.index')" :active="request()->routeIs('penitipan.hewan.index')">
                             {{ 'Status Penitipan' }}
                         </x-nav-link>
@@ -30,9 +33,6 @@
                         </x-nav-link>
                         <x-nav-link :href="route('booking.konsultasi.manage')" :active="request()->routeIs('booking.konsultasi.manage')">
                             {{ 'Antrean Konsultasi' }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
-                            {{ 'Rawat Inap' }}
                         </x-nav-link>
                     @endrole
                     @role('admin')
@@ -112,6 +112,17 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @role('user')
+                <x-responsive-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">
+                    {{ 'Hewan Saya' }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('booking.myBookings')" :active="request()->routeIs('booking.myBookings')">
+                    {{ 'Riwayat Booking' }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('penitipan.hewan.index')" :active="request()->routeIs('penitipan.hewan.index')">
+                    {{ 'Status Penitipan' }}
+                </x-responsive-nav-link>
+            @endrole
         </div>
 
         <!-- Responsive Settings Options -->

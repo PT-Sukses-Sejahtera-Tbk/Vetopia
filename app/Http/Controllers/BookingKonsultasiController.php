@@ -81,7 +81,7 @@ class BookingKonsultasiController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,dikonfirmasi,diperiksa,selesai',
+            'status' => 'required|in:pending,dikonfirmasi,diperiksa,menunggu pembayaran,selesai',
         ]);
 
         $booking = BookingKonsultasi::findOrFail($id);
@@ -116,6 +116,7 @@ class BookingKonsultasiController extends Controller
         $request->validate([
             'diagnosa' => 'required|string',
             'tindakan' => 'required|string',
+            'biaya' => 'required|numeric|min:0',
         ]);
 
         $booking = BookingKonsultasi::findOrFail($id);
@@ -145,10 +146,22 @@ class BookingKonsultasiController extends Controller
             'tindakan' => $request->tindakan,
         ]);
 
-        // Update booking status to selesai
-        $booking->status = 'selesai';
+        // Update booking with biaya and change status to menunggu pembayaran
+        $booking->biaya = $request->biaya;
+        $booking->status = 'menunggu pembayaran';
         $booking->save();
 
-        return redirect()->route('booking.konsultasi.manage')->with('success', 'Konsultasi selesai dan rekam medis berhasil dibuat!');
+        return redirect()->route('booking.konsultasi.manage')->with('success', 'Konsultasi selesai! Menunggu pembayaran dari pasien.');
+    }
+
+    // Patient's own booking history
+    public function myBookings()
+    {
+        $bookings = BookingKonsultasi::with('dokter')
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('bookConsultation.myBookings', compact('bookings'));
     }
 }

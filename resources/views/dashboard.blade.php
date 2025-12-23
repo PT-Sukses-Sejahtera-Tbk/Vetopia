@@ -10,6 +10,30 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @role('user')
+            <!-- Quick Actions Banner -->
+            <div class="mb-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl shadow-lg overflow-hidden">
+                <div class="p-6 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-semibold text-lg">Riwayat Booking Konsultasi</h3>
+                            <p class="text-blue-100 text-sm">Lihat status booking dan lakukan pembayaran</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('booking.myBookings') }}" 
+                       class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold text-sm rounded-lg hover:bg-blue-50 transition duration-150 shadow-md">
+                        Lihat Riwayat
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-white rounded-2xl border border-gray-200 p-8">
                     <h3 class="text-lg font-semibold mb-4">Hewan Terdaftar : {{ $userHewans->count() }}</h3>
