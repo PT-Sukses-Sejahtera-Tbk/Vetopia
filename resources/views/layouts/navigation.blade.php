@@ -37,9 +37,6 @@
                         <x-nav-link :href="route('pemeriksaan.lab.manage')" :active="request()->routeIs('pemeriksaan.lab.manage')">
                             {{ 'Pemeriksaan Lab' }}
                         </x-nav-link>
-                        <x-nav-link :href="route('dummy')" :active="request()->routeIs('dummy')">
-                            {{ 'Rawat Inap' }}
-                        </x-nav-link>
                     @endrole
                     @role('admin')
                         <x-nav-link :href="route('hewan.index')" :active="request()->routeIs('hewan.index')">

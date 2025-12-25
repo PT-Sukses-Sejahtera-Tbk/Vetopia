@@ -76,7 +76,7 @@
     </section>
 
         <!-- Section 2: Mitra Terbaik untuk Kesehatan Sahabat Bulu Anda -->
-    <section class="w-full bg-white flex flex-col items-center justify-center" style="min-height:900px; max-width:1920px; margin:auto;">
+    <section id="tentang" class="w-full bg-white flex flex-col items-center justify-center" style="min-height:900px; max-width:1920px; margin:auto;">
         <div class="flex flex-col items-center justify-center h-full py-24">
             <img src="{{ asset('images/home/logo.png') }}" alt="Vetopia Logo" class="mb-8" style="height:251px; width: 417px;">
             <h2 class="text-5xl md:text-6xl font-bold text-center mb-2">Mitra Terbaik Kesehatan</h2>

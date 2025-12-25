@@ -11,7 +11,7 @@
                 <a href="/" class="px-6 py-2 {{ ($title ?? '') == 'Home' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full hover:bg-gray-800 transition">
                     Home
                 </a>
-                <a href="/tentang" class="px-6 py-2 {{ ($title ?? '') == 'Tentang' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full transition">
+                <a href="#tentang" class="px-6 py-2 {{ ($title ?? '') == 'Tentang' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full transition">
                     Tentang
                 </a>
                 <a href="/layanan" class="px-6 py-2 {{ ($title ?? '') == 'Layanan' ? 'bg-black text-white' : 'text-gray-700 hover:text-gray-900' }} rounded-full transition">
