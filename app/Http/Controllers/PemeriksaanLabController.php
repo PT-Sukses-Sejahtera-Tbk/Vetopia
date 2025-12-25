@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\PemeriksaanLab;
 use App\Models\Hewan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\SystemNotification; // Import Notifikasi
+use Carbon\Carbon; // Import Carbon
 
 class PemeriksaanLabController extends Controller
 {
@@ -13,7 +16,9 @@ class PemeriksaanLabController extends Controller
     public function index()
     {
         $hewans = Hewan::where('user_id', auth()->id())->get();
-        return view('pemeriksaanLab', compact('hewans'));
+        // Mengambil riwayat lab user juga agar bisa ditampilkan di view
+        $riwayat_lab = PemeriksaanLab::where('user_id', auth()->id())->latest()->get();
+        return view('pemeriksaanLab', compact('hewans', 'riwayat_lab'));
     }
 
     public function store(Request $request)
@@ -80,10 +85,37 @@ class PemeriksaanLabController extends Controller
         $lab->status = $request->status;
         $lab->save();
 
+        // NOTIFIKASI OTOMATIS: Jika dikonfirmasi dan tanggalnya HARI INI
+        if ($request->status == 'dikonfirmasi') {
+            $tglBooking = Carbon::parse($lab->tanggal_booking);
+            
+            if ($tglBooking->isToday()) {
+                try {
+                    $user = User::find($lab->user_id);
+                    $user->notify(new SystemNotification(
+                        'Jadwal Lab Hari Ini',
+                        "Halo {$lab->nama_pemilik}, hari ini ada jadwal pemeriksaan lab untuk {$lab->nama_hewan}. Harap datang tepat waktu!",
+                        route('pemeriksaan.lab.index')
+                    ));
+                } catch (\Exception $e) {}
+            }
+        }
+
+        // NOTIFIKASI OTOMATIS: Jika Admin klik 'selesai' (Hasil bisa diambil)
+        if ($request->status == 'selesai') {
+            try {
+                $user = User::find($lab->user_id);
+                $user->notify(new SystemNotification(
+                    'Hasil Lab Keluar',
+                    "Halo {$lab->nama_pemilik}, hasil pemeriksaan lab untuk {$lab->nama_hewan} sudah selesai dan dapat dilihat/diambil.",
+                    route('pemeriksaan.lab.index')
+                ));
+            } catch (\Exception $e) {}
+        }
+
         return redirect()->route('pemeriksaan.lab.manage')->with('success', 'Status pemeriksaan berhasil diperbarui!');
     }
 
-    // Menampilkan Form Pengisian Hasil Lab
     public function showCompleteForm($id)
     {
         if (!auth()->user()->hasAnyRole(['admin', 'doctor'])) {
@@ -91,12 +123,9 @@ class PemeriksaanLabController extends Controller
         }
 
         $lab = PemeriksaanLab::findOrFail($id);
-        
-        // Perbaikan: Kirim variabel $lab (single object), bukan collection
         return view('pemeriksaanLab.complete', compact('lab'));
     }
 
-    // Menyimpan Hasil Lab
     public function complete(Request $request, $id)
     {
         if (!auth()->user()->hasAnyRole(['admin', 'doctor'])) {

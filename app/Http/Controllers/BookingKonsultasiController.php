@@ -7,25 +7,22 @@ use App\Models\Hewan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\SystemNotification; // Import Notifikasi
+use Carbon\Carbon; // Import Carbon untuk urus tanggal
 
 class BookingKonsultasiController extends Controller
 {
     // Menampilkan halaman form
     public function index()
     {
-        // Get authenticated user's hewans
         $hewans = Hewan::where('user_id', auth()->id())->get();
-
-        // Get all doctors (users with doctor role)
         $dokters = User::role('doctor')->with('dokter')->get();
-
         return view('bookingKonsultasi', compact('hewans', 'dokters'));
     }
 
-    // Menyimpan data booking (Backend Logic utama)
+    // Menyimpan data booking
     public function store(Request $request)
     {
-        // 1. Validasi
         $request->validate([
             'hewan_id' => 'required|exists:hewans,id',
             'dokter_user_id' => 'required|exists:users,id',
@@ -34,13 +31,9 @@ class BookingKonsultasiController extends Controller
         ]);
 
         try {
-            // Get hewan data
             $hewan = Hewan::findOrFail($request->hewan_id);
-
-            // Format umur
             $umur_lengkap = $hewan->umur . ' Tahun';
 
-            // 2. Simpan ke Database
             BookingKonsultasi::create([
                 'user_id' => Auth::id(),
                 'dokter_user_id' => $request->dokter_user_id,
@@ -60,10 +53,10 @@ class BookingKonsultasiController extends Controller
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
-    // Doctor and Admin management page
+    
+    // Halaman Manage (Dokter/Admin)
     public function manage()
     {
-        // Only doctors and admins can access
         if (!auth()->user()->hasAnyRole(['doctor', 'admin'])) {
             abort(403, 'Unauthorized action.');
         }
@@ -72,10 +65,9 @@ class BookingKonsultasiController extends Controller
         return view('bookConsultation.index', compact('bookings'));
     }
 
-    // Update booking status (doctor only)
+    // === Update Status & Logika Notifikasi Otomatis ===
     public function updateStatus(Request $request, $id)
     {
-        // Only doctors can update status
         if (!auth()->user()->hasRole('doctor')) {
             abort(403, 'Unauthorized action.');
         }
@@ -88,10 +80,41 @@ class BookingKonsultasiController extends Controller
         $booking->status = $request->status;
         $booking->save();
 
+        // LOGIKA KHUSUS DEMO:
+        // Cek jika status diubah jadi 'dikonfirmasi'
+        if ($request->status == 'dikonfirmasi') {
+            
+            // Ambil tanggal booking dari database
+            $tglBooking = Carbon::parse($booking->tanggal_booking);
+            
+            // Cek apakah tanggalnya HARI INI?
+            if ($tglBooking->isToday()) {
+                // Jika YA (Hari Ini) -> Kirim Notif Hari H
+                try {
+                    $booking->user->notify(new SystemNotification(
+                        'Jadwal Konsultasi Hari Ini',
+                        // PERUBAHAN DISINI: Menghapus "kak"
+                        "Halo {$booking->nama_pemilik}, hari ini jadwal konsultasi untuk {$booking->nama_hewan} telah dikonfirmasi. Harap bersiap ya!",
+                        route('booking.myBookings')
+                    ));
+                } catch (\Exception $e) {}
+
+            } else {
+                // Jika BUKAN Hari Ini (misal besok) -> Kirim Notif Konfirmasi Biasa
+                try {
+                    $booking->user->notify(new SystemNotification(
+                        'Booking Dikonfirmasi',
+                        "Jadwal konsultasi untuk {$booking->nama_hewan} pada tanggal " . $tglBooking->format('d M Y') . " telah disetujui dokter.",
+                        route('booking.myBookings')
+                    ));
+                } catch (\Exception $e) {}
+            }
+        }
+
         return redirect()->route('booking.konsultasi.manage')->with('success', 'Status berhasil diperbarui!');
     }
 
-    // Show form to complete consultation with rekam medis
+    // Form Selesai Periksa
     public function showCompleteForm($id)
     {
         $booking = BookingKonsultasi::findOrFail($id);
@@ -100,7 +123,6 @@ class BookingKonsultasiController extends Controller
             return redirect()->route('booking.konsultasi.manage')->with('error', 'Booking harus dalam status diperiksa.');
         }
 
-        // Get hewan_id from booking's nama_hewan
         $hewan = \App\Models\Hewan::where('nama', $booking->nama_hewan)
             ->where('user_id', $booking->user_id)
             ->first();
@@ -110,7 +132,7 @@ class BookingKonsultasiController extends Controller
         return view('bookConsultation.complete', compact('booking', 'hewan', 'dokter'));
     }
 
-    // Complete consultation and create rekam medis
+    // Simpan Rekam Medis & Notif Tagihan
     public function complete(Request $request, $id)
     {
         $request->validate([
@@ -121,7 +143,6 @@ class BookingKonsultasiController extends Controller
 
         $booking = BookingKonsultasi::findOrFail($id);
 
-        // Get hewan
         $hewan = \App\Models\Hewan::where('nama', $booking->nama_hewan)
             ->where('user_id', $booking->user_id)
             ->first();
@@ -130,14 +151,12 @@ class BookingKonsultasiController extends Controller
             return redirect()->back()->with('error', 'Hewan tidak ditemukan.');
         }
 
-        // Get dokter
         $dokter = \App\Models\Dokter::where('user_id', auth()->id())->first();
 
         if (!$dokter) {
             return redirect()->back()->with('error', 'Profil dokter tidak ditemukan.');
         }
 
-        // Create rekam medis
         \App\Models\RekamMedis::create([
             'hewan_id' => $hewan->id,
             'dokter_id' => $dokter->id,
@@ -146,15 +165,23 @@ class BookingKonsultasiController extends Controller
             'tindakan' => $request->tindakan,
         ]);
 
-        // Update booking with biaya and change status to menunggu pembayaran
         $booking->biaya = $request->biaya;
         $booking->status = 'menunggu pembayaran';
         $booking->save();
 
+        // Notifikasi Tagihan
+        try {
+            $booking->user->notify(new SystemNotification(
+                'Tagihan Pembayaran',
+                "Pemeriksaan {$booking->nama_hewan} selesai. Total tagihan: Rp " . number_format($booking->biaya, 0, ',', '.'),
+                route('payment.show', $booking->id)
+            ));
+        } catch (\Exception $e) {}
+
         return redirect()->route('booking.konsultasi.manage')->with('success', 'Konsultasi selesai! Menunggu pembayaran dari pasien.');
+        
     }
 
-    // Patient's own booking history
     public function myBookings()
     {
         $bookings = BookingKonsultasi::with('dokter')

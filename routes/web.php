@@ -107,6 +107,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/hewan/{hewan}', [HewanController::class, 'destroy'])->name('hewan.destroy');
 });
 
+// Route untuk tandai satu notifikasi sudah dibaca
+    Route::get('/notification/{id}/read', function ($id) {
+        $notification = auth()->user()->notifications()->find($id);
+        if ($notification) {
+            $notification->markAsRead();
+        }
+        return back();
+    })->name('markRead');
+
+    // Route untuk tandai SEMUA notifikasi sudah dibaca
+    Route::get('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('markAllRead');
 
 
 require __DIR__ . '/auth.php';
