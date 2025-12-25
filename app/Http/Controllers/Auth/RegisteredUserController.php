@@ -43,10 +43,12 @@ class RegisteredUserController extends Controller
             'phone_number' => $request->phone_number,
         ]);
 
-        event(new Registered($user));
+    $user->assignRole('user'); 
 
-        Auth::login($user);
+    event(new Registered($user));
 
-        return redirect(route('dashboard', absolute: false));
+    Auth::login($user);
+
+    return redirect(route('dashboard', absolute: false));
     }
 }
